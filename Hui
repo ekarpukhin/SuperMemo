@@ -1,0 +1,5 @@
+class Hui:
+     def __init__(self):
+         self.name = 'Hui'
+     def __str__(self):
+           return '{}'.format(self.name)
