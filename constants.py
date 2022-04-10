@@ -1,2 +1,3 @@
-test_size = 50
-win_rate = 25
+test_size = 4
+win_rate = 2
+batch_size = 5
