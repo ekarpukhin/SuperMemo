@@ -28,7 +28,10 @@ $("#Login-button").on("click", function(){
                 $("#errorMessage_login").text(data);
              }
             $("#Login-button").prop("disabled", false);
-        }
+        },
+        error: function (xhr, errmsg, err) {
+      window.alert("Log-in: something went wrong!\n" + xhr.status + ": " + xhr.responseText);
+    }
     });
 
 });
