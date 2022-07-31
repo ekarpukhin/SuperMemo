@@ -10,7 +10,7 @@ import SuperMemo
 #
 # print(question(card))
 
-print('print your name')
+print('print your name: ', end='')
 name = input()
 print('print how many days you wanna study')
 n = int(input())
