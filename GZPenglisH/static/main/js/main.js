@@ -1,8 +1,12 @@
 function getAnsewer() {
     let form = document.getElementById("input-form");
+    let text_out = {
+        value: form.text.value
+    };
 
     function complete(value) {
         document.onekeydown = null;
+        form.text.value = '';
         window.alert(value);
     }
 
@@ -10,11 +14,27 @@ function getAnsewer() {
         let value = form.text.value;
         if (value == '') return false;
 
+
+        $.ajax({
+            url: "/static/main/ajax/translate_form.py/get_answer_form_js",//"/static/main/js/CardModal.js",//"/static/main/ajax/translate_form.php",
+            method: "POST",
+            dataType: "json",
+            data: {
+                url: value,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+        }).done(function (xhr) {
+                window.alert("All is good, you're doing fine! status:" + xhr.status);
+            }
+        ).fail(function (xhr, errmsg, err) {
+            window.alert("Sending to PHP: something went wrong!\n" + xhr.status + ": " + xhr.responseText);
+        });
+
         complete(value);
         return false;
     };
 
-    return form.text.value;
+    return text_out.value;
 }
 
 let modalWrap = null;
@@ -37,7 +57,7 @@ const showModal = arguments => {
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-light">
-            <h5 class="modal-title">hello</h5>
+            <h5 class="modal-title">Напиши перевод слова</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form id="input-form">
@@ -55,7 +75,7 @@ const showModal = arguments => {
     </div>
   `;
 
-    modalWrap.querySelector('.modal-success-btn').onclick = function (){
+    modalWrap.querySelector('.modal-success-btn').onclick = function () {
         str_in = getAnsewer();
     };
 
