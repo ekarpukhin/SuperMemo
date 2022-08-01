@@ -1,6 +1,4 @@
-<?
-
-var_dump($_POST);
-echo "Hi";
-
+<?php
+    $a = 10;
+    var_dump($a);
 ?>

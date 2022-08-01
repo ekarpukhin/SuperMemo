@@ -14,12 +14,12 @@ function getAnsewer() {
         let value = form.text.value;
         if (value == '') return false;
 
-        let dataForm = $(this).serialize();
+        let dataForm = value;//$(this).serialize();
         $.ajax({
             //      "/static/main/ajax/translate_form.py/get_answer_form_js",
             //      "/static/main/js/CardModal.js",
             //      "/static/main/ajax/translate_form.php",
-            url: "/static/main/ajax/translate_form.py/get_answer_form_js",
+            url: "/static/main/ajax/translate_form.php",
             method: "POST",
             dataType: "html",
             data: dataForm,
