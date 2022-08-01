@@ -14,15 +14,19 @@ function getAnsewer() {
         let value = form.text.value;
         if (value == '') return false;
 
-
+        let dataForm = $(this).serialize();
         $.ajax({
-            url: "/static/main/ajax/translate_form.py/get_answer_form_js",//"/static/main/js/CardModal.js",//"/static/main/ajax/translate_form.php",
+            //      "/static/main/ajax/translate_form.py/get_answer_form_js",
+            //      "/static/main/js/CardModal.js",
+            //      "/static/main/ajax/translate_form.php",
+            url: "/static/main/ajax/translate_form.py/get_answer_form_js",
             method: "POST",
-            dataType: "json",
-            data: {
-                url: value,
-                csrfmiddlewaretoken: '{{ csrf_token }}',
-            },
+            dataType: "html",
+            data: dataForm,
+            // data: {
+            //     url: value,
+            //     csrfmiddlewaretoken: '{{ csrf_token }}',
+            // },
         }).done(function (xhr) {
                 window.alert("All is good, you're doing fine! status:" + xhr.status);
             }
