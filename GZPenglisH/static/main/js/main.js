@@ -1,29 +1,14 @@
-function getAnswer() {
+function getAnsewer() {
     let form = document.getElementById("input-form");
 
     function complete(value) {
-        document.onkeydown = null;
+        document.onekeydown = null;
         window.alert(value);
     }
 
     form.onsubmit = function () {
         let value = form.text.value;
         if (value == '') return false;
-        $("document").ready(function () {
-            $.ajax({
-                url: "/CardModal.js",
-                //type: "POST",
-                method: "post",
-                dataType: "json",
-                data: {
-                    url: value,
-                    csrfmiddlewaretoken: '{{ csrf_token }}'
-                },
-                error: function (xhr, errmsg, err) {
-                    window.alert("Sending to Django: something went wrong!\n" + xhr.status + ": " + xhr.responseText);
-                }
-            });
-        });
 
         complete(value);
         return false;
@@ -31,7 +16,6 @@ function getAnswer() {
 
     return form.text.value;
 }
-
 
 let modalWrap = null;
 
@@ -41,10 +25,11 @@ const showModal = arguments => {
     }
 
     let str_out = arguments;
+    let str_in = null;
     if (typeof arguments !== "string") {
         str_out = arguments[0]
     }
-    let str_in = null;
+
 
     modalWrap = document.createElement('div');
     modalWrap.innerHTML = `
@@ -52,13 +37,13 @@ const showModal = arguments => {
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-light">
-            <h5 class="modal-title">Напиши перевод</h5>
+            <h5 class="modal-title">hello</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form id="input-form">
           <div class="modal-body">
-            <p>` + arguments + `</p>
-           <input name="text" type="text" size="50">
+            <p>` + str_out + `</p>
+            <input name="text" type="text" size="50">
           </div>
           <div class="modal-footer justify-content-center">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
@@ -70,10 +55,8 @@ const showModal = arguments => {
     </div>
   `;
 
-
-    modalWrap.querySelector('.modal-success-btn').onclick = function () {
-        str_in = getAnswer();
-        //          /courses/templates/courses/someshit.py
+    modalWrap.querySelector('.modal-success-btn').onclick = function (){
+        str_in = getAnsewer();
     };
 
     document.body.append(modalWrap);

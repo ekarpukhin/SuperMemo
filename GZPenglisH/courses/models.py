@@ -13,6 +13,3 @@ class Courses(models.Model):
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
-
-
-#   class Cards()
