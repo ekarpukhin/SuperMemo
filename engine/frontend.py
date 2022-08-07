@@ -5,6 +5,8 @@ def question(card):
     :return:
     """
     print(card.question)
-    if input() == card.answer:
+    if input() in card.answer:
+        print("you are right!")
         return 1
+    print("wrong.")
     return 0
