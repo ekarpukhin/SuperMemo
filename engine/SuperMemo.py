@@ -1,12 +1,17 @@
-import frontend
 import User
 from Card import Card
 import global_vars
 from DataBase import Table
 
 
-def sm2(card: Card, q):
-    q *= 5
+def sm2(card: Card, q: bool):
+    """
+    Main algorithm, modifies only
+    cards with interval I=1.
+    :param card:
+    :param q:
+    :return:
+    """
     if q >= 3:
         if card.n == 0:
             card.I = 1
@@ -24,14 +29,26 @@ def sm2(card: Card, q):
 
 
 class TeachingIter:
+    """
+    Iterator, that returns Card objects
+    from user's card set and
+    receiving requests.
+    """
     def __init__(self, user: User):
         self.user = user
         self.table = Table(user)
         self.get_card = self.table.get_cards()
         self.used_cnt = 0
         self.curr_card = None
+        self.used_cards = []
 
     def process_card(self, ans: bool):
+        """
+        Processing last card that was given to user
+        and update it in the user's card set.
+        :param ans:
+        :return:
+        """
         sm2(self.curr_card, ans)
         self.table.update_card(self.curr_card)
         self.used_cnt += 1
@@ -40,6 +57,12 @@ class TeachingIter:
         return self
 
     def __next__(self):
+        """
+        Gives cards that already was given ago till
+        they exist, then load new cards and repeats till
+        number of given cards less then number of cards per day.
+        :return: card: Card
+        """
         if self.used_cnt >= global_vars.batch_size:
             raise StopIteration
         while True:
@@ -50,8 +73,11 @@ class TeachingIter:
                 self.table.load_random_cards()
                 self.get_card = self.table.get_cards()
             else:
-                if card.I == 1:
-                    self.curr_card = card
-                    return card
-                card.I -= 1
-                self.table.update_card(card)
+                print([card.question for card in self.used_cards])
+                if card not in self.used_cards:
+                    self.used_cards.append(card)
+                    if card.I == 1:
+                        self.curr_card = card
+                        return card
+                    card.I -= 1
+                    self.table.update_card(card)

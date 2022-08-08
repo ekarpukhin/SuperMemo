@@ -21,7 +21,6 @@ class User:
         for level in reversed(range(1, 6)):
             self.level = level
             if self.level_test(level):
-                print('jopa')
                 break
 
     def level_test(self, level):

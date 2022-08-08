@@ -10,6 +10,12 @@ class DataBase:
     _instance = None
 
     def __new__(cls, *args, **kwargs):
+        """
+        Allow having only one instance of
+        database connection.
+        :param args:
+        :param kwargs:
+        """
         if cls._instance:
             return cls._instance
         cls._instance = object.__new__(cls)
@@ -28,6 +34,11 @@ class DataBase:
 
 class Table:
     def __init__(self, user=None):
+        """
+        Create connection if not exist and some fields
+        to make queries.
+        :param user:
+        """
         self.user = user
         db = DataBase()
         self.connection = db.connection
@@ -36,6 +47,13 @@ class Table:
         self.used_size = 0
 
     def get_user(self, name):
+        """
+        If user with this name exists, return
+        User obj based on user table. Else, create new
+        user and write it to user table.
+        :param name:
+        :return:
+        """
         self.cursor.execute(''' select id, name, level from users where name = ?''', [name])
         user_data = self.cursor.fetchall()
         if user_data:
@@ -50,6 +68,13 @@ class Table:
         return self.user
 
     def load_random_cards(self):
+        """
+        It usually called when used cards run out.
+        Selecting cards in cards table whose id is not
+        the id that current user's card have. Then load them to
+        user's card set.
+        :return:
+        """
         self.cursor.execute(''' SELECT id FROM cards
             where level = ? and ROWID < 8800 and id not in 
             (
@@ -63,7 +88,12 @@ class Table:
                 ''' INSERT INTO cards_info(card_id, user_id) values (?, ?)''', [card_id, self.user.id])
         self.connection.commit()
 
-    def get_cards(self):    # smth wrong with join
+    def get_cards(self):
+        """
+        Generator function, return Cards that are in
+        user's card set and change last card id(it's for update_card function).
+        :return:
+        """
         self.cursor.execute(''' SELECT content, info, card_id FROM cards_info a
         left join cards b on b.id = a.card_id WHERE user_id = ?
                  ORDER BY random(); ''', [self.user.id])
@@ -74,6 +104,11 @@ class Table:
             yield new_card
 
     def update_card(self, card: Card):
+        """
+        Updates last card given outside.
+        :param card:
+        :return:
+        """
         self.cursor.execute(''' UPDATE cards_info
                                 SET info = ?
                                 WHERE card_id = ? and user_id ; ''',
@@ -81,7 +116,12 @@ class Table:
         self.connection.commit()
 
     def clear_user_cards(self):
+        """
+        Usually need after level tests.
+        :return:
+        """
         self.cursor.execute('''DELETE FROM cards_info where user_id = ?''', [self.user.id])
+        self.connection.commit()
 
 
 def json_from_card(card: Card):
@@ -91,8 +131,8 @@ def json_from_card(card: Card):
     return json.dumps(d)
 
 
-def card_from_json(contain, info=None):
-    d1 = json.loads(contain)
+def card_from_json(content, info=None):
+    d1 = json.loads(content)
     if not info:
         return Card(d1['question'], d1['answer'])
     d2 = json.loads(info)

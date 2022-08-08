@@ -7,6 +7,6 @@ def question(card):
     print(card.question)
     if input() in card.answer:
         print("you are right!")
-        return 1
+        return 5
     print("wrong.")
     return 0
