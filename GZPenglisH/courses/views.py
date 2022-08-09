@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views import View
 
 
-def courses_main(request):
-    card = "Platypus"
-    data = {
-        "card": card,
-    }
+class CourseViewMain(View):
 
-    return render(request, 'courses/courses_page.html', data)
+    def get(self, request, *args, **kwargs):
+        card = "Platypus"
+        data = {
+            "card": card,
+        }
+        return render(request, 'courses/courses_page.html', data)
 
 
 def get_answer_form_js(request):

@@ -14,21 +14,19 @@ function getAnsewer() {
         let value = form.text.value;
         if (value == '') return false;
 
-        let dataForm = value;//$(this).serialize();
         $.ajax({
             //      "/static/main/ajax/translate_form.py/get_answer_form_js",
             //      "/static/main/js/CardModal.js",
             //      "/static/main/ajax/translate_form.php",
-            url: "/static/main/ajax/translate_form.php",
+            url: "/static/main/ajax/translate_form.py",
             method: "POST",
-            dataType: "html",
-            data: dataForm,
-            // data: {
-            //     url: value,
-            //     csrfmiddlewaretoken: '{{ csrf_token }}',
-            // },
+            dataType: "json",
+            data: {
+                url: value,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
         }).done(function (xhr) {
-                window.alert("All is good, you're doing fine! status:" + xhr.status);
+                window.alert("All is good, you're doing fine! status:" + xhr.status+ "\nResponseText\n" + xhr.responseText);
             }
         ).fail(function (xhr, errmsg, err) {
             window.alert("Sending to PHP: something went wrong!\n" + xhr.status + ": " + xhr.responseText);

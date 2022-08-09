@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import CourseViewMain
 
 urlpatterns = [
-    path('', views.courses_main, name='courses_main'),
+    path('', CourseViewMain.as_view(), name='courses_main'),
 ]

@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views import View
 
 
-def main_main(request):
-    # data =
-    return render(request, 'main/main_page.html')
+class MainViewMain(View):
+
+    def get(self, request, *args, **kwargs):
+        # data =
+        return render(request, 'main/main_page.html')
 
 
-def about_info(request):
-    # data =
-    return render(request, 'main/about_info.html')
+class AboutViewMain(View):
+
+    def get(self, request, *args, **kwargs):
+        # data =
+        return render(request, 'main/about_info.html')
