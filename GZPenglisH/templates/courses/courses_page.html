@@ -16,7 +16,7 @@
                     </div>
                     <div class="col-2">
                         <div class="control play">
-                            <button type="button" class="btn btn-success" onclick="showModal(' {{ card|safe }} ');">Начать</button>
+                            <button type="button" class="btn btn-success" onclick="showModalCard(' {{ card|safe }} ');">Начать</button>
                         </div>
                     </div>
                     <div class="col-5">
@@ -28,6 +28,5 @@
             </div>
         </div>
     </section>
-
-    <script src="{% static 'main/js/main.js' %}"></script>
+    <script src="{% static 'main/js/ShowCardModal.js' %}"></script>
 {% endblock %}
