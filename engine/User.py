@@ -32,16 +32,13 @@ class User:
         """
         from DataBase import Table
         print('level', level)
-        win_rate = 0
-        i = 0
+        correct = 0
         table = Table(self)
         table.load_random_cards()
         cards = table.get_cards()
-        while i < global_vars.test_size:
-            if frontend.question(next(cards)):
-                win_rate += 1
-            i += 1
+        for _ in range(global_vars.test_size):
+            correct += frontend.question(next(cards))/5
         table.clear_user_cards()
-        if win_rate >= global_vars.min_win_rate:
+        if correct / global_vars.test_size >= global_vars.min_win_rate:
             return 1
         return 0
