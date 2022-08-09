@@ -15,10 +15,7 @@ function getAnsewer() {
         if (value == '') return false;
 
         $.ajax({
-            //      "/static/main/ajax/translate_form.py/get_answer_form_js",
-            //      "/static/main/js/CardModal.js",
-            //      "/static/main/ajax/translate_form.php",
-            url: "/static/main/ajax/translate_form.py",
+            url: "/get_answer",
             method: "POST",
             dataType: "json",
             data: {
