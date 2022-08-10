@@ -17,6 +17,8 @@ class CourseViewMain(View):
 @csrf_exempt
 def get_answer_form_js(request):
     answer = request.POST.get('url')
-    print("Yes")
-    print("Your answer: {}".format(answer))
-    return JsonResponse({'status': 'Todo added!'})
+    if answer == "aboba":
+        answer_status = True
+    else:
+        answer_status = False
+    return JsonResponse({'status': 'Todo added!', "responseText": answer, "answer_status": answer_status})
