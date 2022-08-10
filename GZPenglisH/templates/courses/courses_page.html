@@ -20,7 +20,7 @@
                     </div>
                     <div class="col-2">
                         <div class="control play">
-                            <button type="button" class="btn btn-success" onclick="showModalCard(' {{ card|safe }} ')">Начать</button>
+                            <button type="button" class="btn btn-success" data-bs-target="OutCardModal" onclick="showModalCard()">Начать</button>
                         </div>
                     </div>
                     <div class="col-5">
@@ -33,5 +33,27 @@
         </div>
     </section>
 
+    <div id="OutCardModal">
+    <div class="modal fade" id="CardModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title">Напиши перевод слова</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="input-form">
+        <div class="modal-body">
+          <p>{{ card }}</p>
+          <input name="text" type="text" size="50">
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
+          <input type="submit" class="btn btn-success modal-success-btn" value="Ответить!">
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+    </div>
 
 {% endblock %}
