@@ -17,6 +17,7 @@ class CourseViewMain(View):
 @csrf_exempt
 def get_answer_form_js(request):
     answer = request.POST.get('url')
+    print(answer)
     if answer == "aboba":
         answer_status = True
     else:
