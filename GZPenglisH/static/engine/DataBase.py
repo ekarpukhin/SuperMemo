@@ -23,7 +23,7 @@ class DataBase:
 
     def __init__(self):
         try:
-            self.connection = sqlite3.connect('DataBase')
+            self.connection = sqlite3.connect('static/engine/DataBase')
             print('Connection Succeeded')
         except Error:
             print('Ooops, somth wrong')

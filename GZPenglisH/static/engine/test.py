@@ -9,4 +9,3 @@ teach = TeachingIter(user)
 for card in teach:
     print(card.answer)
     teach.process_card(question(card))
-

@@ -1,4 +1,4 @@
-var ModalWrap = null;
+let ModalWrap = null;
 const showModal = () => {
 
     if(ModalWrap !== null){
