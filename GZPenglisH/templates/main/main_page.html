@@ -5,6 +5,34 @@
 <title>Главная</title>
 {% endblock %}
 
+{% block login %}
+    <script src="{% static 'main/js/login_form.js'%}"></script>
+    <ul class="navbar-nav d-flex">
+                    <!-- Если залогинен
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" id="navDrop" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">Личный кабинет</a>
+                        <ul class="dropdown-menu" aria-labelledby="navDrop">
+                            <li><div class="dropdown-item">Здравствуйте, $name$</div></li>
+                            <li><a href="#" class="dropdown-item">Статистика</a></li>
+                            <li><a href="#" class="dropdown-item">Выход</a></li>
+                        </ul>
+                    </li>
+                    -->
+
+
+                    <!-- Если не залогинен-->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal"
+                                data-bs-target="#LoginModal">Log In
+                        </button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                data-bs-target="#SignUpModel">Sign Up
+                        </button>
+                    </div>
+                </ul>
+{% endblock %}
+
 {% block content %}
     <section id="hero" class="d-flex align-items-center justify-content-center">
         <div class="container text-center">

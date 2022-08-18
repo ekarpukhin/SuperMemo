@@ -23,7 +23,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-
 function getAnswer() {
     let form = document.getElementById("input-form");
     let card_modal = document.getElementById("CardModal");
@@ -34,12 +33,17 @@ function getAnswer() {
 
     function complete(value) {
         document.onekeydown = null;
-        //form.text.value = '';   // Что бы была пустая строка после ввода
+        form.text.value = '';   // Что бы была пустая строка после ввода
     }
 
-    const changeQuestion = (xhr) => {
+    const changeQuestion = (new_word) => {
         let field = document.getElementById("question-field");
-        field.textContent = xhr.new_word;
+        field.textContent = new_word;
+    }
+
+    const endingOfStudy = () => {
+        document.getElementById("btn-answer").remove();
+        document.getElementById("answer-field").remove();
     }
 
     form.onsubmit = function () {
@@ -59,8 +63,9 @@ function getAnswer() {
             },
         }).done(function (xhr) {
                 //window.alert("All is good, you're doing fine! status:" + xhr.status + "\nResponseText\n" + xhr.responseText);
-                window.alert(gradenote[xhr.answer_status])
-                changeQuestion(xhr)
+                window.alert(gradenote[xhr.answer_status]);
+                changeQuestion(xhr.new_word);
+                if (xhr.end_of_study) endingOfStudy();
                 json_return = xhr;
             }
         ).fail(function (xhr, errmsg, err) {

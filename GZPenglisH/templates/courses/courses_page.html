@@ -7,10 +7,10 @@
 
 {% block content %}
 
-<!-- Background object -->
-<script src="{% static 'main/js/ShowCardModal.js' %}"></script>
+    <!-- Background object -->
+    <script src="{% static 'main/js/ShowCardModal.js' %}"></script>
 
-<section id="hero" class="d-flex justify-content-center">
+    <section id="hero" class="d-flex justify-content-center">
         <div class="container text-center">
             <div class="row justify-content-center">
                 <div class="row">
@@ -20,7 +20,9 @@
                     </div>
                     <div class="col-2">
                         <div class="control play">
-                            <button type="button" class="btn btn-success" data-bs-target="OutCardModal" onclick="showModalCard()">Начать</button>
+                            <button type="button" class="btn btn-success" data-bs-target="OutCardModal"
+                                    onclick="showModalCard()">Начать
+                            </button>
                         </div>
                     </div>
                     <div class="col-5">
@@ -34,26 +36,41 @@
     </section>
 
     <div id="OutCardModal">
-    <div class="modal fade" id="CardModal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title">Напиши перевод слова</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal fade" id="CardModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    {% if not card.end_day %}
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title">Напиши перевод слова</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="input-form">
+                            <div class="modal-body">
+                                <p id="question-field">{{ card }}</p>
+                                <input id="answer-field" name="text" type="text" size="50">
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
+                                <input type="submit" class="btn btn-success modal-success-btn" id="btn-answer"
+                                       value="Ответить!">
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="modal-header bg-light">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="input-form">
+                            <div class="modal-body">
+                                <h5 class="modal-title">На сегодня все, приходите завтра!</h5>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">До завтра!</button>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <form id="input-form">
-        <div class="modal-body">
-          <p id="question-field">{{ card }}</p>
-          <input name="text" type="text" size="50">
-        </div>
-        <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
-          <input type="submit" class="btn btn-success modal-success-btn" value="Ответить!">
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
     </div>
 
 {% endblock %}
