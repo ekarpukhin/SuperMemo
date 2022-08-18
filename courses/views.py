@@ -10,7 +10,6 @@ from userpage.GlobalUser import get_user
 
 card = None
 
-
 class DataProcessing:
     def __init__(self, username):
         table = Table()
@@ -30,6 +29,7 @@ class DataProcessing:
 
 class CourseViewMain(View):
     def get(self, request, *args, **kwargs):
+        global card
         card = DataProcessing(get_user().name)
         try:
             question_word = card.next_word().question
@@ -59,4 +59,3 @@ def get_answer_form_js(request):
     return JsonResponse(
         {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
          "new_word": next_question_word, "end_of_study": end_of_study})
-# Сделать нормально
