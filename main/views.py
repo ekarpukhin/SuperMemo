@@ -9,7 +9,7 @@ class MainViewMain(View):
         data = {
             "is_login": False,
         }
-        return render(request, 'main/main_page.html')
+        return render(request, 'main/main_page.html', data)
 
 
 class AboutViewMain(View):
@@ -18,4 +18,4 @@ class AboutViewMain(View):
         data = {
             "is_login": False,
         }
-        return render(request, 'main/about_info.html')
+        return render(request, 'main/about_info.html', data)

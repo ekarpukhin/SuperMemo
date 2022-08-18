@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path('', CourseViewMain.as_view(), name='courses_main'),
-    path('get_answer/', views.get_answer_form_js, name='getAnswer')
+    path('get_answer/', views.get_answer_form_js, name='getAnswer'),
 ]

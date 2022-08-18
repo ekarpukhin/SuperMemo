@@ -27,10 +27,6 @@ function getCookie(name) {
 
 function getAnswer() {
     let form = document.getElementById("input-form");
-    let card_modal = document.getElementById("CardModal");
-    let text_out = {
-        value: form.text.value
-    };
     let json_return = null;
 
     function complete(value) {
@@ -62,7 +58,7 @@ function getAnswer() {
                 "X-CSRFToken": getCookie("csrftoken"),  // don't forget to include the 'getCookie' function
             },
             data: {
-                url: value
+                user_answer: value
             },
         }).done(function (xhr) {
                 //window.alert("All is good, you're doing fine! status:" + xhr.status + "\nResponseText\n" + xhr.responseText);

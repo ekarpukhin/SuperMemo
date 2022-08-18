@@ -6,13 +6,15 @@ from django.views.decorators.csrf import csrf_exempt
 from .frontend import grade as get_grade
 from .SuperMemo import TeachingIter
 from .DataBase import Table
+from userpage.GlobalUser import get_user
+
+card = None
 
 
 class DataProcessing:
     def __init__(self, username):
         table = Table()
-        user = table.get_user(username)
-        self.teach = TeachingIter(user)
+        self.teach = TeachingIter(table.get_user(username))
         self.current_word = None
         self.end_day = False
 
@@ -26,13 +28,9 @@ class DataProcessing:
         return self.current_word
 
 
-username = "Ivan"
-card = DataProcessing(username)
-
-
 class CourseViewMain(View):
-
     def get(self, request, *args, **kwargs):
+        card = DataProcessing(get_user().name)
         try:
             question_word = card.next_word().question
         except StopIteration:
@@ -48,7 +46,7 @@ class CourseViewMain(View):
 
 @csrf_exempt
 def get_answer_form_js(request):
-    user_answer = request.POST.get('url')
+    user_answer = request.POST.get('user_answer')
     print(user_answer)
     answer_status = card.process(user_answer)
     try:

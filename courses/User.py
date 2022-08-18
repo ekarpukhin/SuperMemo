@@ -1,6 +1,5 @@
 from .global_vars import *
 from .frontend import question
-from .SuperMemo import TeachingIter
 
 
 class User:
@@ -24,6 +23,7 @@ def define_level(user: User):
 
 
 def level_test(user: User, level):
+    from .SuperMemo import TeachingIter
     """
     User's given set of cards of certain level and he has to give answers.
     If his win rate will be good, return True
