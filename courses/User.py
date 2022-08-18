@@ -1,44 +1,42 @@
 from .global_vars import *
 from .frontend import question
+from .SuperMemo import TeachingIter
 
 
 class User:
     def __init__(self, id, name, level=None):
         self.name = name
         self.id = id
-        if not level:
-            self.define_level()
-        else:
-            self.level = level
+        self.level = level
 
-    def define_level(self):
-        """
-        Defining level of user
-        Default user level is 0
-        :return: level
-        """
-        print('Lets define your level')
-        for level in reversed(range(1, 6)):
-            self.level = level
-            if self.level_test(level):
-                break
 
-    def level_test(self, level):
-        """
-        User's given set of cards of certain level and he has to give answers.
-        If his win rate will be good, return True
-        :param level:
-        :return bool
-        """
-        from .DataBase import Table
-        print('level', level)
-        correct = 0
-        table = Table(self)
-        table.load_random_cards()
-        cards = table.get_cards()
-        for _ in range(test_size):
-            correct += question(next(cards))/5
-        table.clear_user_cards()
-        if correct / test_size >= min_win_rate:
-            return 1
-        return 0
+def define_level(user: User):
+    """
+    Defining level of user
+    Default user level is 0
+    :return: level
+    """
+    print('Lets define your level')
+    for level in reversed(range(1, 7)):
+        user.level = level
+        if level_test(user, level):
+            break
+
+
+def level_test(user: User, level):
+    """
+    User's given set of cards of certain level and he has to give answers.
+    If his win rate will be good, return True
+    :param level:
+    :return bool
+    """
+    print('level', level)
+    correct = 0
+    cards_iter = TeachingIter(user, test_size)
+    # здесь надо в цикле брать карточку, отправлять пользователю, возвращать ответ, (ответ)/5 добавлять в correct
+    # и вызывть process у итератора, отправляя ответ туда
+
+    cards_iter.table.clear_user_cards()
+    if correct / test_size >= min_win_rate:
+        return 1
+    return 0

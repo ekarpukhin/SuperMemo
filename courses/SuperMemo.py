@@ -34,15 +34,16 @@ class TeachingIter:
     from user's card set and
     receiving requests.
     """
-    def __init__(self, user: User):
+    def __init__(self, user: User, card_set_size=batch_size):
         self.user = user
         self.table = Table(user)
         self.get_card = self.table.get_cards()
         self.used_cnt = 0
         self.curr_card = None
         self.used_cards = []
+        self.card_set_size = card_set_size
 
-    def process_card(self, ans: bool):
+    def process_card(self, ans):
         """
         Processing last card that was given to user
         and update it in the user's card set.
@@ -63,7 +64,7 @@ class TeachingIter:
         number of given cards less then number of cards per day.
         :return: card: Card
         """
-        if self.used_cnt >= batch_size:
+        if self.used_cnt >= self.card_set_size:
             raise StopIteration
         while True:
             try:
