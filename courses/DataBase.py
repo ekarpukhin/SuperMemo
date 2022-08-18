@@ -13,8 +13,6 @@ class Table:
         :param user:
         """
         self.user = user
-        self.connection = connection
-        self.cursor = self.connection.cursor()
         self.last_card_id = None
         self.used_size = 0
 
@@ -26,17 +24,20 @@ class Table:
         :param name:
         :return:
         """
-        self.cursor.execute(''' select id, name, level from users where name = %s ''', [name])
-        user_data = self.cursor.fetchall()
-        if user_data:
-            self.user = User(*user_data[0])
-            return self.user
-        self.cursor.execute(''' select count(*) from users ''')
-        new_user_id = self.cursor.fetchall()[0][0] + 1
-        self.user = User(new_user_id, name)
-        self.cursor.execute(''' INSERT INTO users(name, level) VALUES (%s, %s); ''',
-                            [self.user.name, self.user.level])
-        self.connection.commit()
+        print("user huy")
+        with connection.cursor() as cursor:
+            cursor.execute(''' select id, name, level from users where name = %s ''', [name])
+            user_data = cursor.fetchall()
+            if user_data:
+                self.user = User(*user_data[0])
+            else:
+                cursor.execute(''' select count(*) from users ''')
+                new_user_id = cursor.fetchall()[0][0] + 1
+                self.user = User(new_user_id, name)
+                cursor.execute(''' INSERT INTO users(name, level) VALUES (%s, %s); ''',
+                               [self.user.name, self.user.level])
+                connection.commit()
+        print("user end huy")
         return self.user
 
     def load_random_cards(self):
@@ -47,18 +48,21 @@ class Table:
         user's card set.
         :return:
         """
-        self.cursor.execute(''' SELECT id FROM cards
-            where level = %s and ROWID < 8800 and id not in 
-            (
-                select card_id_id from cards_info where user_id_id = %s
-            )       
-            ORDER BY random() LIMIT %s; ''', [self.user.level, self.user.id, batch_size - self.used_size])
-        cards = self.cursor.fetchall()
-        for card in cards:
-            card_id = card[0]
-            self.cursor.execute(
-                ''' INSERT INTO cards_info(card_id_id, user_id_id) values (%s, %s)''', [card_id, self.user.id])
-        self.connection.commit()
+        with connection.cursor() as cursor:
+            cursor.execute(''' SELECT id FROM cards
+                where level = %s and ROWID < 8800 and id not in 
+                (
+                    select card_id_id from cards_info where user_id_id = %s
+                )       
+                ORDER BY random() LIMIT %s; ''', [self.user.level, self.user.id, batch_size - self.used_size])
+            cards = cursor.fetchall()
+            print("1st huy")
+            for card in cards:
+                card_id = card[0]
+                cursor.execute(
+                    ''' INSERT INTO cards_info(card_id_id, user_id_id) values (%s, %s)''', [card_id, self.user.id])
+            print("2nd huy")
+            connection.commit()
 
     def get_cards(self):
         """
@@ -66,14 +70,18 @@ class Table:
         user's card set and change last card id(it's for update_card function).
         :return:
         """
-        self.cursor.execute(''' SELECT content, card_info, card_id_id FROM cards_info a
-        left join cards b on b.id = a.card_id_id WHERE user_id_id = %s
-                 ORDER BY random(); ''', [self.user.id])
-        cards = self.cursor.fetchall()
-        for card in cards:
-            new_card = card_from_json(card[0], card[1])
-            self.last_card_id = card[2]
-            yield new_card
+        print("get cards start")
+        with connection.cursor() as cursor:
+            cursor.execute(''' SELECT content, card_info, card_id_id FROM cards_info a
+            left join cards b on b.id = a.card_id_id WHERE user_id_id = %s
+                     ORDER BY random(); ''', [self.user.id])
+            print("get cards pre-iter")
+            cards = cursor.fetchall()
+            for card in cards:
+                new_card = card_from_json(card[0], card[1])
+                self.last_card_id = card[2]
+                yield new_card
+                print("get cards iteration")
 
     def update_card(self, card: Card):
         """
@@ -81,19 +89,24 @@ class Table:
         :param card:
         :return:
         """
-        self.cursor.execute(''' UPDATE cards_info
-                                SET card_info = %s
-                                WHERE card_id_id = %s and user_id_id ; ''',
-                            [json_from_card(card), self.last_card_id])
-        self.connection.commit()
+        with connection.cursor() as cursor:
+            print("1st huy")
+            cursor.execute(''' UPDATE cards_info
+                                    SET card_info = %s
+                                    WHERE card_id_id = %s and user_id_id ; ''',
+                                [json_from_card(card), self.last_card_id])
+            print("2st huy")
+            connection.commit()
+            print("3st huy")
 
     def clear_user_cards(self):
         """
         Usually need after level tests.
         :return:
         """
-        self.cursor.execute('''DELETE FROM cards_info where user_id_id = %s''', [self.user.id])
-        self.connection.commit()
+        with connection.cursor() as cursor:
+            cursor.execute('''DELETE FROM cards_info where user_id_id = %s''', [self.user.id])
+            connection.commit()
 
 
 def json_from_card(card: Card):
@@ -109,4 +122,3 @@ def card_from_json(content, info=None):
         return Card(d1['question'], d1['answer'])
     d2 = json.loads(info)
     return Card(d1['question'], d1['answer'], d2['I'], d2['n'], d2['EF'])
-

@@ -23,13 +23,13 @@ def define_level(user: User):
 
 
 def level_test(user: User, level):
-    from .SuperMemo import TeachingIter
     """
     User's given set of cards of certain level and he has to give answers.
     If his win rate will be good, return True
     :param level:
     :return bool
     """
+    from .SuperMemo import TeachingIter
     print('level', level)
     correct = 0
     cards_iter = TeachingIter(user, test_size)

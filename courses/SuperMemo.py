@@ -34,9 +34,9 @@ class TeachingIter:
     from user's card set and
     receiving requests.
     """
-    def __init__(self, user: User, card_set_size=batch_size):
+    def __init__(self, user: User, table: Table, card_set_size=batch_size):
         self.user = user
-        self.table = Table(user)
+        self.table = table
         self.get_card = self.table.get_cards()
         self.used_cnt = 0
         self.curr_card = None

@@ -8,15 +8,14 @@ from .SuperMemo import TeachingIter
 from .DataBase import Table
 from userpage.GlobalUser import get_user
 
-card = None
-
 
 class DataProcessing:
     def __init__(self, username):
         table = Table()
-        self.teach = TeachingIter(table.get_user(username))
+        self.teach = TeachingIter(table.get_user(username), table=table)
         self.current_word = None
         self.end_day = False
+        print("teach huy")
 
     def process(self, user_answer):
         grade = get_grade(self.current_word, user_answer)
@@ -28,16 +27,20 @@ class DataProcessing:
         return self.current_word
 
 
+card_iter: DataProcessing
+
+
 class CourseViewMain(View):
     def get(self, request, *args, **kwargs):
-        card = DataProcessing(get_user().name)
+        global card_iter
+        card_iter = DataProcessing(get_user().name)
         try:
-            question_word = card.next_word().question
+            question_word = card_iter.next_word().question
         except StopIteration:
             question_word = "That`s all for today!"
         data = {
             "card": question_word,
-            "end_day": card.end_day,
+            "end_day": card_iter.end_day,
 
             "is_login": False,
         }
@@ -48,14 +51,14 @@ class CourseViewMain(View):
 def get_answer_form_js(request):
     user_answer = request.POST.get('user_answer')
     print(user_answer)
-    answer_status = card.process(user_answer)
+    answer_status = card_iter.process(user_answer)
     try:
-        next_question_word = card.next_word().question
+        next_question_word = card_iter.next_word().question
         end_of_study = False
     except StopIteration:
         next_question_word = "That`s all for today!"
         end_of_study = True
-        card.end_day = True
+        card_iter.end_day = True
     return JsonResponse(
         {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
          "new_word": next_question_word, "end_of_study": end_of_study})
