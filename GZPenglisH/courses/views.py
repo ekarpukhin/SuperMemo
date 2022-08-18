@@ -3,9 +3,9 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from static.engine.SuperMemo import TeachingIter
-from static.engine.DataBase import Table
-from static.engine.frontend import grade as get_grade
+from .frontend import grade as get_grade
+from .SuperMemo import TeachingIter
+from .DataBase import Table
 
 
 class DataProcessing:

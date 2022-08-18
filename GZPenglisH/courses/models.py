@@ -1,7 +1,27 @@
 from django.db import models
 
 
+class Cards(models.Model):
+    id = models.IntegerField('id', primary_key=True,)
+    level = models.IntegerField('level')
+    content = models.TextField('content')
+    class Meta:
+        db_table = "cards"
 
+class Users(models.Model):
+    id = models.IntegerField('id', primary_key=True)
+    name = models.CharField('name', max_length=255)
+    level = models.IntegerField('level')
+    class Meta:
+        db_table = "users"
+
+class CardsInfo(models.Model):
+    id = models.IntegerField('id', primary_key=True)
+    user_id = models.ForeignKey(Users, verbose_name='user',on_delete=models.CASCADE)
+    card_id = models.ForeignKey(Cards, verbose_name='card', on_delete=models.CASCADE)
+    card_info = models.TextField('info')
+    class Meta:
+        db_table = "cards_info"
 
 class Courses(models.Model):
     title = models.CharField('Название курса', max_length=100)
