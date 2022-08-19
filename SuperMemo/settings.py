@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'GZPenglisH.urls'
+ROOT_URLCONF = 'SuperMemo.urls'
 
 TEMPLATES = [
     {
@@ -60,7 +60,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'GZPenglisH.wsgi.application'
+WSGI_APPLICATION = 'SuperMemo.wsgi.application'
 
 
 # Database
