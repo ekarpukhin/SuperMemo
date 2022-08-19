@@ -3,7 +3,7 @@ from django.db import models
 
 class Cards(models.Model):
     """
-    хз
+        Класс карточки слова
     """
     id = models.IntegerField('id', primary_key=True, )
     level = models.IntegerField('level')
@@ -15,7 +15,7 @@ class Cards(models.Model):
 
 class Users(models.Model):
     """
-    Класс пользователя, для нахождения его в БД основного алгоритма
+        Класс пользователя, для нахождения его в БД основного алгоритма
     """
     id = models.IntegerField('id', primary_key=True)
     name = models.CharField('name', max_length=255)
@@ -27,7 +27,7 @@ class Users(models.Model):
 
 class CardsInfo(models.Model):
     """
-        хз
+        Связующий класс в таблице для пользователя и карточки
     """
     id = models.IntegerField('id', primary_key=True)
     user_id = models.ForeignKey(Users, verbose_name='user', on_delete=models.CASCADE)
@@ -40,7 +40,7 @@ class CardsInfo(models.Model):
 
 class Courses(models.Model):
     """
-    Пока абсолютно бесполезный класс, который скорее всего придется удалить. В последующем для разных курсов
+        Пока абсолютно бесполезный класс, который скорее всего придется удалить. В последующем для разных курсов
     """
     title = models.CharField('Название курса', max_length=100)
     anons = models.CharField('О курсе', max_length=250)
