@@ -24,7 +24,6 @@ class Table:
         :param name:
         :return:
         """
-        print("user huy")
         with connection.cursor() as cursor:
             cursor.execute(''' select id, name, level from users where name = %s ''', [name])
             user_data = cursor.fetchall()
@@ -37,7 +36,6 @@ class Table:
                 cursor.execute(''' INSERT INTO users(name, level) VALUES (%s, %s); ''',
                                [self.user.name, self.user.level])
                 connection.commit()
-        print("user end huy")
         return self.user
 
     def load_random_cards(self):
@@ -56,12 +54,10 @@ class Table:
                 )       
                 ORDER BY random() LIMIT %s; ''', [self.user.level, self.user.id, batch_size - self.used_size])
             cards = cursor.fetchall()
-            print("1st huy")
             for card in cards:
                 card_id = card[0]
                 cursor.execute(
                     ''' INSERT INTO cards_info(card_id_id, user_id_id) values (%s, %s)''', [card_id, self.user.id])
-            print("2nd huy")
             connection.commit()
 
     def get_cards(self):
@@ -70,18 +66,15 @@ class Table:
         user's card set and change last card id(it's for update_card function).
         :return:
         """
-        print("get cards start")
         with connection.cursor() as cursor:
             cursor.execute(''' SELECT content, card_info, card_id_id FROM cards_info a
             left join cards b on b.id = a.card_id_id WHERE user_id_id = %s
                      ORDER BY random(); ''', [self.user.id])
-            print("get cards pre-iter")
             cards = cursor.fetchall()
             for card in cards:
                 new_card = card_from_json(card[0], card[1])
                 self.last_card_id = card[2]
                 yield new_card
-                print("get cards iteration")
 
     def update_card(self, card: Card):
         """
@@ -90,14 +83,11 @@ class Table:
         :return:
         """
         with connection.cursor() as cursor:
-            print("1st huy")
             cursor.execute(''' UPDATE cards_info
                                     SET card_info = %s
                                     WHERE card_id_id = %s and user_id_id ; ''',
                                 [json_from_card(card), self.last_card_id])
-            print("2st huy")
             connection.commit()
-            print("3st huy")
 
     def clear_user_cards(self):
         """

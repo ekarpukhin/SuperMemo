@@ -15,7 +15,6 @@ class DataProcessing:
         self.teach = TeachingIter(table.get_user(username), table=table)
         self.current_word = None
         self.end_day = False
-        print("teach huy")
 
     def process(self, user_answer):
         grade = get_grade(self.current_word, user_answer)
