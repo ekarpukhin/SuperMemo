@@ -3,10 +3,10 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from .frontend import grade as get_grade
+from .frontend import get_grade
 from .SuperMemo import TeachingIter
 from .DataBase import Table
-from userpage.GlobalUser import get_user
+from userpage.GlobalUser import get_user, get_login_status
 
 
 class DataProcessing:
@@ -40,17 +40,18 @@ class CourseViewMain(View):
     """
     def get(self, request, *args, **kwargs):
         global card_iter
-        if get_user() is not None:
+        question_word = "That`s all for today!"
+        if get_login_status("user"):
             card_iter = DataProcessing(get_user().name)
-        try:
-            question_word = card_iter.next_word().question
-        except StopIteration:
-            question_word = "That`s all for today!"
+            try:
+                question_word = card_iter.next_word().question
+            except StopIteration:
+                pass
         data = {
             "card": question_word,
             "end_day": False,
 
-            "is_login": False,
+            "is_login": get_login_status("user"),
         }
         return render(request, 'courses/courses_page.html', data)
 
