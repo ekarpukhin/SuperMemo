@@ -1,4 +1,5 @@
 let modalWrap = null;
+let askModalWrap = null;
 
 function getCookie(name) {
     let cookieValue = null;
@@ -44,7 +45,10 @@ const getLoginInformation = () => {
                 password: value.password
             },
         }).done(function (xhr) {
-            // window.alert(xhr.status + "\n" + xhr.responseText)
+            if (typeof xhr.responseText == "string"
+                && (xhr.responseText == "login incorrect" || xhr.responseText == "password incorrect")) {
+                window.alert(xhr.status + ": " + xhr.responseText)
+            } else location.reload();
             json_return = xhr;
 
         }).fail(function (xhr, errmsg, err) {
@@ -65,5 +69,18 @@ function showLogin() {
     };
 
     let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
+    modal.show();
+}
+
+function showAskLogin() {
+    askModalWrap = document.getElementById("AskLoginModal");
+    askModalWrap.querySelector(".btn-success").onclick = function () {
+        document.getElementById("close-form").onsubmit = function () {
+            document.onkeydown = null;
+            return false;
+        }
+    };
+
+    let modal = new bootstrap.Modal(askModalWrap.querySelector('.modal'));
     modal.show();
 }
