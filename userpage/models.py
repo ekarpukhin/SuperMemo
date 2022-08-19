@@ -3,6 +3,9 @@ from courses.models import Users
 
 
 class UserInfo(models.Model):
+    """
+        Класс на удаление (Первый вариант, хранящий информацию о пользователе)
+    """
     user_id = models.CharField('ID пользователя', max_length=50)
     user_email = models.CharField('E-mail', max_length=150)
     user_login = models.CharField('Логин', max_length=50)
@@ -20,6 +23,10 @@ class UserInfo(models.Model):
 
 
 class Account(models.Model):
+    """
+        Класс пользователя
+        account_id - объект класса Users из приложения Courses, нужный для алгоритма
+    """
     account_id = models.OneToOneField(Users, verbose_name='id', primary_key=True, on_delete=models.CASCADE)
     user_login = models.CharField('login', max_length=64)
     user_password = models.CharField('password', max_length=64)

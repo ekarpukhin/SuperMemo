@@ -10,12 +10,16 @@ from userpage.GlobalUser import get_user
 
 
 class DataProcessing:
+    """
+    Связующий класс между алгоритмом и отображением карточек у пользователя
+    В конструкторе находится пользователь и определяется текущий набор карточек для него
+    Метод process() - оценивает ответ пользователя
+    Метод next_word() - возвращает следующую карточку
+    """
     def __init__(self, username):
         table = Table()
         self.teach = TeachingIter(table.get_user(username), table=table)
         self.current_word = None
-        self.end_day = False
-        print("teach huy")
 
     def process(self, user_answer):
         grade = get_grade(self.current_word, user_answer)
@@ -31,16 +35,20 @@ card_iter: DataProcessing
 
 
 class CourseViewMain(View):
+    """
+    Класс отображения html-ки с карточками
+    """
     def get(self, request, *args, **kwargs):
         global card_iter
-        card_iter = DataProcessing(get_user().name)
+        if get_user() is not None:
+            card_iter = DataProcessing(get_user().name)
         try:
             question_word = card_iter.next_word().question
         except StopIteration:
             question_word = "That`s all for today!"
         data = {
             "card": question_word,
-            "end_day": card_iter.end_day,
+            "end_day": False,
 
             "is_login": False,
         }
@@ -49,6 +57,10 @@ class CourseViewMain(View):
 
 @csrf_exempt
 def get_answer_form_js(request):
+    """
+    Функция получающая ответ на карточку через ajax от пользователя
+    Отправляет пользователю его оценку и следующее слово
+    """
     user_answer = request.POST.get('user_answer')
     print(user_answer)
     answer_status = card_iter.process(user_answer)
@@ -58,8 +70,6 @@ def get_answer_form_js(request):
     except StopIteration:
         next_question_word = "That`s all for today!"
         end_of_study = True
-        card_iter.end_day = True
     return JsonResponse(
         {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
          "new_word": next_question_word, "end_of_study": end_of_study})
-# Сделать нормально
