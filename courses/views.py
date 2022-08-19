@@ -3,10 +3,10 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from .frontend import grade as get_grade
+from .frontend import get_grade
 from .SuperMemo import TeachingIter
 from .DataBase import Table
-from userpage.GlobalUser import get_user
+from userpage.GlobalUser import get_user, get_login_status
 
 
 class DataProcessing:
@@ -16,9 +16,11 @@ class DataProcessing:
     Метод process() - оценивает ответ пользователя
     Метод next_word() - возвращает следующую карточку
     """
-    def __init__(self, username):
+    def __init__(self):
         table = Table()
-        self.teach = TeachingIter(table.get_user(username), table=table)
+        table.user = get_user()
+        print(get_user())
+        self.teach = TeachingIter(table=table)
         self.current_word = None
 
     def process(self, user_answer):
@@ -40,17 +42,18 @@ class CourseViewMain(View):
     """
     def get(self, request, *args, **kwargs):
         global card_iter
-        if get_user() is not None:
-            card_iter = DataProcessing(get_user().name)
-        try:
-            question_word = card_iter.next_word().question
-        except StopIteration:
-            question_word = "That`s all for today!"
+        question_word = "That`s all for today!"
+        if get_login_status("user"):
+            card_iter = DataProcessing()
+            try:
+                question_word = card_iter.next_word().question
+            except StopIteration:
+                pass
         data = {
             "card": question_word,
             "end_day": False,
 
-            "is_login": False,
+            "is_login": get_login_status("user"),
         }
         return render(request, 'courses/courses_page.html', data)
 

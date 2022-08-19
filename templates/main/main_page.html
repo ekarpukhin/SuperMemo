@@ -8,24 +8,30 @@
 {% block login %}
     <script src="{% static 'main/js/login_form.js' %}"></script>
     <ul class="navbar-nav d-flex">
-    {% if is_login == True %}
-        <!-- Если залогинен-->
-        <li class="nav-item dropdown">
-            <a href="{% url 'user_page_main' %}" class="nav-link dropdown-toggle" id="navDrop" role="button"
-            data-bs-toggle="dropdown" aria-expanded="false">Личный кабинет</a>
-            <ul class="dropdown-menu" aria-labelledby="navDrop">
-                <li><div class="dropdown-item">Здравствуйте, {{ username }}</div></li>
-                <li><a class="dropdown-item">Выход</a></li>
-            </ul>
-        </li>
-        <!-- Если не залогинен-->
+        {% if is_login == True %}
+            <!-- Если залогинен-->
+            <li class="nav-item dropdown">
+                <a href="{% url 'user_page_main' %}" class="nav-link dropdown-toggle" id="navDrop" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">Здравствуйте, {{ username }}</a>
+                <ul class="dropdown-menu" aria-labelledby="navDrop">
+                    <li>
+                        <div class="dropdown-item">Личный кабинет</div>
+                    </li>
+                    <li>
+                        <form id="logout-form">
+                            <input id="logout-btn" type="submit" class="dropdown-item" value="Выход" onclick="logout()">
+                        </form>
+                    </li>
+                </ul>
+            </li>
+            <!-- Если не залогинен-->
         {% else %}
             <div class="btn-group">
                 <button type="button" class="btn btn-light" data-bs-toggle="modal"
                         data-bs-target="#LoginModal" onclick="showLogin()">Log In
                 </button>
                 <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                        data-bs-target="#SignUpModal">Sign Up
+                        data-bs-target="#SignUpModal" onclick="showSignUp()">Sign Up
                 </button>
             </div>
         {% endif %}
@@ -59,6 +65,8 @@
                             <h5 class="modal-title">Сначала нужно зарегестрироваться или войти в аккаунт!</h5>
                         </div>
                         <div class="modal-footer justify-content-center">
+{#                            <input type="submit" class="btn btn-success modal-success-btn" data-bs-toggle="modal"#}
+{#                                   data-bs-target="#SignUpModal" onclick="showSignUp()" value="Зарегистрироваться">#}
                             <input type="submit" class="btn btn-success modal-success-btn" data-bs-toggle="modal"
                                    data-bs-target="#LoginModal" onclick="showLogin()" value="Войти">
                         </div>
@@ -115,32 +123,32 @@
                 </div>
                 <div class="modal-body">
                     <div class="form">
-                        <form class="form-horizontal" role="form" method="POST">
+                        <form class="form-horizontal" id="signup-form">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Ваше Имя</label>
                                 <div class="col-sm-10">
-                                    <input type="text" id="name" class="form-control" placeholder="Имя" name="name">
+                                    <input type="text" id="name_signup" class="form-control" placeholder="Имя" name="name_signup">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>
                                 <div class="col-sm-10">
-                                    <input type="text" id="login" class="form-control" placeholder="Логин" name="login">
+                                    <input type="text" id="login_signup" class="form-control" placeholder="Логин" name="login_signup">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>
                                 <div class="col-sm-10">
-                                    <input type="password" id="password" class="form-control" placeholder="Пароль"
-                                           name="password">
+                                    <input type="password" id="password_signup" class="form-control" placeholder="Пароль"
+                                           name="password_signup">
                                 </div>
+                            </div>
+                            <div class="modal-footer justify-content-center">
+                                <input type="submit" class="btn btn-success" id="SignUp-button" name="signup-button"
+                                       value="Sign Up" data-bs-dismiss="modal">
                             </div>
                         </form>
                     </div>
-                    <div class="result" id="result">В случае ошибки</div>
-                </div>
-                <div class="modal-footer justify-content-center">
-                    <button type="button" class="btn btn-success" id="SignUp-button">Sign Up</button>
                 </div>
             </div>
         </div>

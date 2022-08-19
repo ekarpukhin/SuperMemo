@@ -1,15 +1,9 @@
 from .global_vars import *
 from .frontend import question
+from .models import Users
 
 
-class User:
-    def __init__(self, id, name, level=None):
-        self.name = name
-        self.id = id
-        self.level = level
-
-
-def define_level(user: User):
+def define_level(user: Users):
     """
     Defining level of user
     Default user level is 0
@@ -22,7 +16,7 @@ def define_level(user: User):
             break
 
 
-def level_test(user: User, level):
+def level_test(user: Users, level):
     """
     User's given set of cards of certain level and he has to give answers.
     If his win rate will be good, return True
@@ -32,7 +26,7 @@ def level_test(user: User, level):
     from .SuperMemo import TeachingIter
     print('level', level)
     correct = 0
-    cards_iter = TeachingIter(user, test_size)
+    cards_iter = TeachingIter(test_size)
     # здесь надо в цикле брать карточку, отправлять пользователю, возвращать ответ, (ответ)/5 добавлять в correct
     # и вызывть process у итератора, отправляя ответ туда
 

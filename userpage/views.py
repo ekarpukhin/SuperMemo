@@ -44,3 +44,43 @@ def get_login_form_js(request):
         return JsonResponse({'status': 'Success', "responseText": value["login"]})
     else:
         return JsonResponse({'status': 'Fail', "responseText": "password incorrect"})
+
+
+@csrf_exempt
+def get_logout_form_js(request):
+    """
+        Функция для выхода из аккаунта
+    """
+    value = request.POST.get('logout')
+    if value:
+        print("Success logout!")
+        set_user(None)
+        set_account(None)
+        return JsonResponse({'status': 'Success', "responseText": "Logout"})
+    else:
+        return JsonResponse({'status': 'Fail', "responseText": "Something went wrong"})
+
+
+@csrf_exempt
+def get_signup_form_js(request):
+    """
+        Функция для регистрации аккаунта
+    """
+    value = {
+        "name": request.POST.get('name'),
+        "login": request.POST.get('login'),
+        "password": request.POST.get('password')
+    }
+    try:
+        check_account = Account.objects.get(user_login=value["login"])
+        return JsonResponse({'status': 'Fail', "responseText": "login duplicate"})
+    except ObjectDoesNotExist:
+        print("Name: {}\tLogin: {}\tPassword: {}".format(value["name"], value["login"], value["password"]))
+        user = Users(name=value["login"], level=1)
+        user.save()
+        user = Users.objects.get(name=user.name)
+        account = Account(account_id=user, user_login=value["login"], user_password=value["password"])
+        account.save()
+        set_account(account)
+        set_user(user)
+        return JsonResponse({'status': 'Success', "responseText": value["login"]})

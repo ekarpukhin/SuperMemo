@@ -1,6 +1,5 @@
 import json
 from .Card import Card
-from .User import User
 from .global_vars import batch_size
 from django.db import connection
 
@@ -15,28 +14,6 @@ class Table:
         self.user = user
         self.last_card_id = None
         self.used_size = 0
-
-    def get_user(self, name):
-        """
-        If user with this name exists, return
-        User obj based on user table. Else, create new
-        user and write it to user table.
-        :param name:
-        :return:
-        """
-        with connection.cursor() as cursor:
-            cursor.execute(''' select id, name, level from users where name = %s ''', [name])
-            user_data = cursor.fetchall()
-            if user_data:
-                self.user = User(*user_data[0])
-            else:
-                cursor.execute(''' select count(*) from users ''')
-                new_user_id = cursor.fetchall()[0][0] + 1
-                self.user = User(new_user_id, name)
-                cursor.execute(''' INSERT INTO users(name, level) VALUES (%s, %s); ''',
-                               [self.user.name, self.user.level])
-                connection.commit()
-        return self.user
 
     def load_random_cards(self):
         """

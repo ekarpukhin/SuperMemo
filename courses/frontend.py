@@ -2,7 +2,7 @@ from .Card import Card
 from .define_accuracy import define_accuracy
 
 
-def grade(card: Card, user_answer):
+def get_grade(card: Card, user_answer):
     """
     Calls distance algorithm for all
     possible answers, print grade

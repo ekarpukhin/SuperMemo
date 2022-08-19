@@ -1,4 +1,3 @@
-from .User import User
 from .Card import Card
 from .global_vars import *
 from .DataBase import Table
@@ -34,8 +33,7 @@ class TeachingIter:
     from user's card set and
     receiving requests.
     """
-    def __init__(self, user: User, table: Table, card_set_size=batch_size):
-        self.user = user
+    def __init__(self, table: Table, card_set_size=batch_size):
         self.table = table
         self.get_card = self.table.get_cards()
         self.used_cnt = 0
