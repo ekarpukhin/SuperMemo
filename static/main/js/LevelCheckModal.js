@@ -7,7 +7,6 @@ let gradenote = {
     5: "Excellent!"
 }
 let modalWrap = null;
-let ability_to_answer = true;
 
 const complete = () => {
     document.onkeydown = null;
@@ -48,6 +47,26 @@ const postAJAX = (url, data, successFunc, failFunc) => {
     });
 }
 
+function logout() {
+    postAJAX('/userpage/get_logout/', {logout: true}, function (xhr) {
+        },
+        function (xhr, errmsg, err) {
+        });
+
+    complete();
+}
+
+function showAskLogin() {
+    askModalWrap = document.getElementById("AskLoginModal");
+    document.getElementById("close-form").onsubmit = function () {
+        complete();
+        return false;
+    }
+
+    let modal = new bootstrap.Modal(askModalWrap.querySelector('.modal'));
+    modal.show();
+}
+
 function getAnswer() {
     let form = document.getElementById("input-form");
 
@@ -61,23 +80,15 @@ function getAnswer() {
         field.textContent = new_word;
     }
 
-    const endingOfStudy = () => {
-        document.getElementById("btn-answer").remove();
-        document.getElementById("answer-field").remove();
-        document.getElementById("title-card-h5").textContent = "😢";
-        ability_to_answer = false;
-    }
-
     form.onsubmit = function () {
         let value = {
             user_answer: form.text.value
         };
         if (value.user_answer == '') return false;
 
-        postAJAX('/courses/get_answer/', value, function (xhr) {
+        postAJAX('/courses/get_levelcheck/', value, function (xhr) {
             window.alert(gradenote[xhr.answer_status]);
             changeQuestion(xhr.new_word);
-            if (xhr.end_of_study) endingOfStudy();
         }, function (xhr, errmsg, err) {
         });
 
@@ -88,25 +99,10 @@ function getAnswer() {
 
 function showModalCard() {
     modalWrap = document.getElementById('OutCardModal');
-    if (ability_to_answer) {
-        modalWrap.querySelector('.modal-success-btn').onclick = function () {
-            getAnswer();
-        };
-    }
+    modalWrap.querySelector('.modal-success-btn').onclick = function () {
+        getAnswer();
+    };
 
     let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
     modal.show();
-}
-
-function showModalOverCard() {
-    modalWrap = document.getElementById('OutCardModal');
-    let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
-    modal.show();
-}
-
-function logout() {
-    postAJAX('/userpage/get_logout/', {logout: true}, function (xhr) {},
-        function (xhr, errmsg, err) {});
-
-    complete();
 }

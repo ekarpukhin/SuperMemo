@@ -5,7 +5,7 @@ from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Account
-from .GlobalUser import set_user, set_account, get_account, get_login_status, get_username
+from .GlobalUser import set_user, set_account, get_account, get_user, get_login_status, get_username
 from courses.models import Users
 
 
@@ -16,7 +16,9 @@ class UserPageViewMain(View):
     def get(self, request, *args, **kwargs):
         data = {
             "is_login": get_login_status("user"),
-            "username": get_username()
+            "username": get_username(),
+
+            "account": get_account(),
         }
         return render(request, 'userpage/user_page.html', data)
 
@@ -41,6 +43,7 @@ def get_login_form_js(request):
         print("I found this user")
         set_account(try_account)
         set_user(Users.objects.get(id=get_account().account_id.id))
+        print(get_account().account_id.name, get_account().user_login)
         return JsonResponse({'status': 'Success', "responseText": value["login"]})
     else:
         return JsonResponse({'status': 'Fail', "responseText": "password incorrect"})

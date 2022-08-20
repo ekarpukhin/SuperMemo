@@ -1,5 +1,4 @@
 from django.urls import path
-from .views import CourseViewMain
 from . import views
 
 """
@@ -8,6 +7,8 @@ from . import views
 """
 
 urlpatterns = [
-    path('', CourseViewMain.as_view(), name='courses_main'),
+    path('', views.CourseViewMain.as_view(), name='courses_main'),
+    path('level_check/', views.LevelCheckViewMain.as_view(), name='levelcheck_main'),
     path('get_answer/', views.get_answer_form_js, name='getAnswer'),
+    path('get_levelcheck/', views.get_lvlcheck_form_js, name='getLVLcheck'),
 ]

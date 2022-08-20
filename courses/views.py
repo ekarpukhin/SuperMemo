@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .frontend import get_grade
 from .SuperMemo import TeachingIter
 from .DataBase import Table
-from userpage.GlobalUser import get_user, get_login_status
+from userpage.GlobalUser import get_user, get_login_status, get_username
 
 
 class DataProcessing:
@@ -54,6 +54,7 @@ class CourseViewMain(View):
             "end_day": False,
 
             "is_login": get_login_status("user"),
+            "username": get_username(),
         }
         return render(request, 'courses/courses_page.html', data)
 
@@ -76,3 +77,30 @@ def get_answer_form_js(request):
     return JsonResponse(
         {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
          "new_word": next_question_word, "end_of_study": end_of_study})
+
+
+class LevelCheckViewMain(View):
+    def get(self, request, *args, **kwargs):
+        data = {
+            "is_login": get_login_status("user"),
+            "username": get_username(),
+        }
+        return render(request, 'courses/levelcheck_page.html', data)
+
+
+@csrf_exempt
+def get_lvlcheck_form_js(request):
+    """
+    Функция получающая ответ на карточку через ajax от пользователя при определении уровня
+    Отправляет пользователю следующее слово
+    """
+    user_answer = request.POST.get('user_answer')
+    print(user_answer)
+    answer_status = 1
+    try:
+        next_question_word = "Faggot"
+    except StopIteration:
+        next_question_word = "The End!"
+    return JsonResponse(
+        {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
+         "new_word": next_question_word})

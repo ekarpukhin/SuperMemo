@@ -11,7 +11,6 @@ function getCookie(name) {
         const cookies = document.cookie.split(";");
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === (name + "=")) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
@@ -21,9 +20,28 @@ function getCookie(name) {
     return cookieValue;
 }
 
+const postAJAX = (url, data, successFunc, failFunc) => {
+    $.ajax({
+        url: url,
+        method: "POST",
+        dataType: "json",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+        },
+        data: data,
+    }).done(function (xhr) {
+        //window.alert(xhr.status + ": " + xhr.responseText)
+        successFunc(xhr);
+
+    }).fail(function (xhr, errmsg, err) {
+        // window.alert(xhr.status + ": " + xhr.responseText);
+        failFunc(xhr, errmsg, err);
+    });
+}
+
 const getLoginInformation = () => {
     let form = document.getElementById("login-form");
-    let json_return = null;
 
     form.onsubmit = function () {
         let value = {
@@ -32,34 +50,40 @@ const getLoginInformation = () => {
         };
         if (value.login == '' || value.password == '') return false;
 
-        $.ajax({
-            url: '/userpage/get_logininfo/',
-            method: "POST",
-            dataType: "json",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),  // don't forget to include the 'getCookie' function
-            },
-            data: {
-                login: value.login,
-                password: value.password
-            },
-        }).done(function (xhr) {
+        postAJAX('/userpage/get_logininfo/', value, function (xhr) {
+            window.alert(xhr.status + ": " + xhr.responseText)
             if (typeof xhr.responseText == "string"
                 && (xhr.responseText == "login incorrect" || xhr.responseText == "password incorrect")) {
                 window.alert(xhr.status + ": " + xhr.responseText)
             } else location.reload();
-            json_return = xhr;
-
-        }).fail(function (xhr, errmsg, err) {
-            // window.alert(xhr.status + ": " + xhr.responseText);
-        });
+        }, function (xhr, errmsg, err) {});
 
         complete();
         return false;
     }
+}
 
-    return json_return;
+const getSignUpInformation = () => {
+    let form = document.getElementById("signup-form");
+
+    form.onsubmit = function () {
+        let value = {
+            name: form.name_signup.value,
+            login: form.login_signup.value,
+            password: form.password_signup.value
+        };
+        if (value.login == '' || value.password == '' || value.name == '') return false;
+
+        postAJAX('/userpage/get_signup/', value, function (xhr) {
+            if (typeof xhr.responseText == "string"
+                && (xhr.responseText == "login duplicate" || xhr.responseText == "password incorrect")) {
+                window.alert(xhr.status + ": " + xhr.responseText)
+            } else location.reload();
+        }, function (xhr, errmsg, err) {});
+
+        complete();
+        return false;
+    }
 }
 
 function showLogin() {
@@ -85,70 +109,13 @@ function showAskLogin() {
 
 function logout() {
     document.getElementById("logout-form").onsubmit = function () {
-        $.ajax({
-            url: '/userpage/get_logout/',
-            method: "POST",
-            dataType: "json",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),  // don't forget to include the 'getCookie' function
-            },
-            data: {
-                logout: true
-            },
-        }).done(function (xhr) {
-            //window.alert(xhr.status + ": " + xhr.responseText);
+        postAJAX('/userpage/get_logout/', {logout: true}, function (xhr) {
             location.reload();
-        }).fail(function (xhr, errmsg, err) {
-            // window.alert(xhr.status + ": " + xhr.responseText);
-        });
+        }, function (xhr, errmsg, err) {});
 
         complete();
         return false;
     }
-}
-
-const getSignUpInformation = () => {
-    let form = document.getElementById("signup-form");
-    let json_return = null;
-
-    form.onsubmit = function () {
-        let value = {
-            name: form.name_signup.value,
-            login: form.login_signup.value,
-            password: form.password_signup.value
-        };
-        if (value.login == '' || value.password == '' || value.name == '') return false;
-
-        $.ajax({
-            url: '/userpage/get_signup/',
-            method: "POST",
-            dataType: "json",
-            headers: {
-                "X-Requested-With": "XMLHttpRequest",
-                "X-CSRFToken": getCookie("csrftoken"),  // don't forget to include the 'getCookie' function
-            },
-            data: {
-                name: value.name,
-                login: value.login,
-                password: value.password
-            },
-        }).done(function (xhr) {
-            if (typeof xhr.responseText == "string"
-                && (xhr.responseText == "login duplicate" || xhr.responseText == "password incorrect")) {
-                window.alert(xhr.status + ": " + xhr.responseText)
-            } else location.reload();
-            json_return = xhr;
-
-        }).fail(function (xhr, errmsg, err) {
-            // window.alert(xhr.status + ": " + xhr.responseText);
-        });
-
-        complete();
-        return false;
-    }
-
-    return json_return;
 }
 
 function showSignUp() {

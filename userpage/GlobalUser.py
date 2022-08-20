@@ -33,11 +33,13 @@ def get_login_status(key):
             return True
         else:
             return False
-    if key == "account":
+    elif key == "account":
         if _account is not None:
             return True
         else:
             return False
+    else:
+        return False
 
 
 def get_username():

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    <title>Курсы</title>
+    <title>Определение уровня</title>
 {% endblock %}
 
 {% block login %}
@@ -30,32 +30,21 @@
 {% block content %}
 
     <!-- Background object -->
-    <script src="{% static 'main/js/ShowCardModal.js' %}"></script>
+    <script src="{% static 'main/js/LevelCheckModal.js' %}"></script>
 
     <section id="hero" class="d-flex justify-content-center">
         <div class="container text-center">
             <div class="row justify-content-center">
                 <div class="row">
-                    <div class="col-5">
-                        <h5>Счетчик верных слов</h5>
-                        <h1 id="correct-words">0</h1>
-                    </div>
                     <div class="col-2">
                         <div class="control play">
                             <button type="button" class="btn btn-success" data-bs-target="OutCardModal"
-                                    {% if end_day == False %}
                                     onclick="showModalCard()"
-                                    {% else %}
-                                    onclick="showModalOverCard()"
-                                    {% endif %}
-                            >Начать
+                            >Начать тестирование
                             </button>
                         </div>
                     </div>
-                    <div class="col-5">
-                        <h5>Счетчик неверных слов</h5>
-                        <h1 id="incorrect-words">0</h1>
-                    </div>
+
                 </div>
 
             </div>
@@ -66,14 +55,13 @@
         <div class="modal fade" id="CardModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    {% if end_day == False %}
                         <div class="modal-header bg-light">
                             <h5 class="modal-title" id="title-card-h5">Напиши перевод слова</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <form id="input-form">
                             <div class="modal-body">
-                                <p id="question-field">{{ card }}</p>
+                                <p id="question-field">IOF</p>
                                 <input id="answer-field" name="text" type="text" size="50">
                             </div>
                             <div class="modal-footer justify-content-center">
@@ -82,19 +70,6 @@
                                        value="Ответить!">
                             </div>
                         </form>
-                    {% else %}
-                        <div class="modal-header bg-light">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <form id="input-form">
-                            <div class="modal-body">
-                                <h5 class="modal-title">На сегодня все, приходите завтра!</h5>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">До завтра!</button>
-                            </div>
-                        </form>
-                    {% endif %}
                 </div>
             </div>
         </div>
