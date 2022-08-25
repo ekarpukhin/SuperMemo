@@ -3,6 +3,7 @@
 
 {% block content %}
     <div style="margin-top: 10vh">
+    <script src="{% static 'main/js/login_form.js' %}"></script>
     <form class="form-horizontal" method="post">
     <div class="form-error">{{ form.non_field_errors }}</div>
                 {% csrf_token %}

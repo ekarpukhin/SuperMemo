@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+    <script src="{% static 'main/js/login_form.js' %}"></script>
     <div style="margin-top: 10vh">
     <form class="form-horizontal" method="post">
                 {% csrf_token %}

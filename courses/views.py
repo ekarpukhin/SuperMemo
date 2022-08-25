@@ -16,6 +16,7 @@ class DataProcessing:
     Метод process() - оценивает ответ пользователя
     Метод next_word() - возвращает следующую карточку
     """
+
     def __init__(self, username):
         table = Table()
         table.user = Users.objects.get(name=username)
@@ -39,17 +40,17 @@ class CourseViewMain(View):
     """
     Класс отображения html-ки с карточками
     """
+
     def get(self, request, *args, **kwargs):
         global card_iter
         question_word = "That`s all for today!"
-        if request.user.is_authenticated:
-            card_iter = DataProcessing(request.user.username)
-            try:
-                question_word = card_iter.next_word().question
-            except StopIteration:
-                pass
-        else:
+        if not request.user.is_authenticated:
             return redirect('main_page')
+        card_iter = DataProcessing(request.user.username)
+        try:
+            question_word = card_iter.next_word().question
+        except StopIteration:
+            pass
         data = {
             "card": question_word,
             "end_day": False,
@@ -83,9 +84,14 @@ class LevelCheckViewMain(View):
     """
         Класс страницы определения уровня пользователя
     """
+
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('main_page')
         data = {
-            "title": "Определение уровня"
+            "title": "Определение уровня",
+            
+            "level": 1
         }
         return render(request, 'courses/levelcheck_page.html', data)
 
