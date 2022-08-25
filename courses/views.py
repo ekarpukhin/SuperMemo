@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .frontend import get_grade
 from .SuperMemo import TeachingIter
 from .DataBase import Table
-from userpage.GlobalUser import get_user, get_login_status, get_username
+from .models import Users
 
 
 class DataProcessing:
@@ -16,10 +16,9 @@ class DataProcessing:
     Метод process() - оценивает ответ пользователя
     Метод next_word() - возвращает следующую карточку
     """
-    def __init__(self):
+    def __init__(self, username):
         table = Table()
-        table.user = get_user()
-        print(get_user())
+        table.user = Users.objects.get(name=username)
         self.teach = TeachingIter(table=table)
         self.current_word = None
 
@@ -43,18 +42,19 @@ class CourseViewMain(View):
     def get(self, request, *args, **kwargs):
         global card_iter
         question_word = "That`s all for today!"
-        if get_login_status("user"):
-            card_iter = DataProcessing()
+        if request.user.is_authenticated:
+            card_iter = DataProcessing(request.user.username)
             try:
                 question_word = card_iter.next_word().question
             except StopIteration:
                 pass
+        else:
+            return redirect('main_page')
         data = {
             "card": question_word,
             "end_day": False,
 
-            "is_login": get_login_status("user"),
-            "username": get_username(),
+            "title": "Курсы",
         }
         return render(request, 'courses/courses_page.html', data)
 
@@ -80,10 +80,12 @@ def get_answer_form_js(request):
 
 
 class LevelCheckViewMain(View):
+    """
+        Класс страницы определения уровня пользователя
+    """
     def get(self, request, *args, **kwargs):
         data = {
-            "is_login": get_login_status("user"),
-            "username": get_username(),
+            "title": "Определение уровня"
         }
         return render(request, 'courses/levelcheck_page.html', data)
 

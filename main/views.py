@@ -2,8 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
 
-from userpage.GlobalUser import get_login_status, get_username
-
 
 class MainViewMain(View):
     """
@@ -11,8 +9,7 @@ class MainViewMain(View):
     """
     def get(self, request, *args, **kwargs):
         data = {
-            "is_login": get_login_status("user"),
-            "username": get_username()
+            "title": "Главная"
         }
         return render(request, 'main/main_page.html', data)
 
@@ -23,7 +20,6 @@ class AboutViewMain(View):
     """
     def get(self, request, *args, **kwargs):
         data = {
-            "is_login": get_login_status("user"),
-            "username": get_username()
+            "title": "О нас"
         }
         return render(request, 'main/about_info.html', data)

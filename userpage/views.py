@@ -1,12 +1,66 @@
-from django.shortcuts import render
+from django.contrib.auth import logout, authenticate, login
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.generic import CreateView
+from django.contrib.auth.views import LoginView
 
-from .models import Account
-from .GlobalUser import set_user, set_account, get_account, get_user, get_login_status, get_username
+from .utils import *
+from .forms import *
 from courses.models import Users
+
+
+class RegisterUser(DataMixin, CreateView):
+    """
+        Класс регистрации нового пользователя (отдельная страничка)
+        После регистрации, пользователь автоматически входит в аккаунт
+    """
+    form_class = RegisterUserForm
+    template_name = 'userpage/register.html'
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Регистрация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        print("Login: ", self.request.POST['username'], "Password: ", self.request.POST['password1'])
+        user = authenticate(username=self.request.POST['username'], password=self.request.POST['password1'])
+        login(self.request, user)
+        return reverse_lazy('create_user')
+
+
+def create_user_in_table(request):
+    """Сразу после регистрации в табличке users создается соответствующая строка"""
+    if request.user.is_authenticated:
+        user = Users(name=request.user.username, level=1)
+        user.save()
+    return redirect('main_page')
+
+
+def logout_user(request):
+    """Выход из аккаунта"""
+    logout(request)
+    return redirect('main_page')
+
+
+class LoginUser(DataMixin, LoginView):
+    """
+            Класс входа пользователя (отдельная страничка)
+    """
+    form_class = LoginUserForm
+    template_name = 'userpage/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(LoginUser, self).get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Авторизация")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('main_page')
 
 
 class UserPageViewMain(View):
@@ -14,76 +68,10 @@ class UserPageViewMain(View):
         Класс отображения html-ки-страницы пользователя
     """
     def get(self, request, *args, **kwargs):
+        _user = Users.objects.get(name=request.user.username)
         data = {
-            "is_login": get_login_status("user"),
-            "username": get_username(),
+            "my_user": _user,
 
-            "account": get_account(),
+            "title": "Личный кабинет",
         }
         return render(request, 'userpage/user_page.html', data)
-
-
-@csrf_exempt
-def get_login_form_js(request):
-    """
-        Функция, получающая логин и пароль при попытке входа
-        Ищет в БД пользователя по логину и
-        присваевает глобальным переменным пользователя соответствующие значения
-    """
-    value = {
-        "login": request.POST.get('login'),
-        "password":  request.POST.get('password')
-    }
-    print("Login: {}\tPassword: {}".format(value["login"], value["password"]))
-    try:
-        try_account = Account.objects.get(user_login=value["login"])
-    except ObjectDoesNotExist:
-        return JsonResponse({'status': 'Fail', "responseText": "login incorrect"})
-    if try_account.user_password == value["password"]:
-        print("I found this user")
-        set_account(try_account)
-        set_user(Users.objects.get(id=get_account().account_id.id))
-        print(get_account().account_id.name, get_account().user_login)
-        return JsonResponse({'status': 'Success', "responseText": value["login"]})
-    else:
-        return JsonResponse({'status': 'Fail', "responseText": "password incorrect"})
-
-
-@csrf_exempt
-def get_logout_form_js(request):
-    """
-        Функция для выхода из аккаунта
-    """
-    value = request.POST.get('logout')
-    if value:
-        print("Success logout!")
-        set_user(None)
-        set_account(None)
-        return JsonResponse({'status': 'Success', "responseText": "Logout"})
-    else:
-        return JsonResponse({'status': 'Fail', "responseText": "Something went wrong"})
-
-
-@csrf_exempt
-def get_signup_form_js(request):
-    """
-        Функция для регистрации аккаунта
-    """
-    value = {
-        "name": request.POST.get('name'),
-        "login": request.POST.get('login'),
-        "password": request.POST.get('password')
-    }
-    try:
-        check_account = Account.objects.get(user_login=value["login"])
-        return JsonResponse({'status': 'Fail', "responseText": "login duplicate"})
-    except ObjectDoesNotExist:
-        print("Name: {}\tLogin: {}\tPassword: {}".format(value["name"], value["login"], value["password"]))
-        user = Users(name=value["login"], level=1)
-        user.save()
-        user = Users.objects.get(name=user.name)
-        account = Account(account_id=user, user_login=value["login"], user_password=value["password"])
-        account.save()
-        set_account(account)
-        set_user(user)
-        return JsonResponse({'status': 'Success', "responseText": value["login"]})

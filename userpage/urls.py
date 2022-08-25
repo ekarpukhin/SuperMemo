@@ -10,8 +10,8 @@ from . import views
 
 urlpatterns = [
     path('', views.UserPageViewMain.as_view(), name='user_page_main'),
-
-    path('get_logininfo/', views.get_login_form_js, name='getLoginInfo'),
-    path('get_logout/', views.get_logout_form_js, name='getLogout'),
-    path('get_signup/', views.get_signup_form_js, name='getSignUp'),
+    path('register/', views.RegisterUser.as_view(), name='register'),
+    path('login/', views.LoginUser.as_view(), name='login'),
+    path('create_user/', views.create_user_in_table, name='create_user'),
+    path('logout/', views.logout_user, name='logout'),
 ]

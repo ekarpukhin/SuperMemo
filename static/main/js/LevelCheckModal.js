@@ -47,15 +47,6 @@ const postAJAX = (url, data, successFunc, failFunc) => {
     });
 }
 
-function logout() {
-    postAJAX('/userpage/get_logout/', {logout: true}, function (xhr) {
-        },
-        function (xhr, errmsg, err) {
-        });
-
-    complete();
-}
-
 function showAskLogin() {
     askModalWrap = document.getElementById("AskLoginModal");
     document.getElementById("close-form").onsubmit = function () {

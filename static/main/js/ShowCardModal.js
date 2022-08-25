@@ -103,10 +103,3 @@ function showModalOverCard() {
     let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
     modal.show();
 }
-
-function logout() {
-    postAJAX('/userpage/get_logout/', {logout: true}, function (xhr) {},
-        function (xhr, errmsg, err) {});
-
-    complete();
-}

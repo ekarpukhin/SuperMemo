@@ -1,0 +1,42 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block content %}
+    <div style="margin-top: 10vh">
+    <form class="form-horizontal" method="post">
+    <div class="form-error">{{ form.non_field_errors }}</div>
+                {% csrf_token %}
+        {% for f in form %}
+            <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label> {{ f }}</p>
+            <div class="form-error">{{ f.errors }}</div>
+        {% endfor %}
+                <button type="submit">Авторизация</button>
+    </form>
+    </div>
+
+{#    <section id="hero" class="d-flex align-items-center justify-content-center">#}
+{#        <div class="form">#}
+{#            <form class="form-horizontal" method="post">#}
+{#                <div class="form-group">#}
+{#                    <label for="inputEmail3" class="col-sm-2 control-label">Логин</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="text" id="login_login" class="form-control" placeholder="Логин"#}
+{#                               name="login_login">#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="form-group">#}
+{#                    <label for="inputPassword3" class="col-sm-2 control-label">Пароль</label>#}
+{#                    <div class="col-sm-10">#}
+{#                        <input type="password" id="password_login" class="form-control" placeholder="Пароль"#}
+{#                               name="password_login">#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div class="modal-footer justify-content-center">#}
+{#                    <input type="submit" class="btn btn-success" id="Login-button" name="login-button"#}
+{#                           value="Log In" data-bs-dismiss="modal">#}
+{#                </div>#}
+{#            </form>#}
+{#        </div>#}
+{#    </section>#}
+
+{% endblock %}

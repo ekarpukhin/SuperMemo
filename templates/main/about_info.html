@@ -1,43 +1,6 @@
 {% extends 'main/layout.html' %}
 {% load static %}
 
-{% block title %}
-    <title>О нас</title>
-{% endblock %}
-
-{% block login %}
-    <script src="{% static 'main/js/login_form.js' %}"></script>
-    <ul class="navbar-nav d-flex">
-        {% if is_login == True %}
-            <!-- Если залогинен-->
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" id="navDrop" role="button"
-                   data-bs-toggle="dropdown" aria-expanded="false">Здравствуйте, {{ username }}</a>
-                <ul class="dropdown-menu" aria-labelledby="navDrop">
-                    <li>
-                        <a href="{% url 'user_page_main' %}" class="dropdown-item">Личный кабинет</a>
-                    </li>
-                    <li>
-                        <form id="logout-form">
-                            <input id="logout-btn" type="submit" class="dropdown-item" value="Выход" onclick="logout()">
-                        </form>
-                    </li>
-                </ul>
-            </li>
-            <!-- Если не залогинен-->
-        {% else %}
-            <div class="btn-group">
-                <button type="button" class="btn btn-light" data-bs-toggle="modal"
-                        data-bs-target="#LoginModal" onclick="showLogin()">Log In
-                </button>
-                <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                        data-bs-target="#SignUpModal" onclick="showSignUp()">Sign Up
-                </button>
-            </div>
-        {% endif %}
-    </ul>
-{% endblock %}
-
 {% block content %}
     <section id="hero" class="d-flex align-items-center justify-content-center">
         <div class="container text-center">
