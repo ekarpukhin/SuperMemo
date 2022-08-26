@@ -17,7 +17,7 @@ def cut_ending(word: str):
     return min_word
 
 
-OPTIONS = 1
+OPTIONS = 5
 
 
 def get_options(correct_word):
@@ -27,6 +27,7 @@ def get_options(correct_word):
     while options_cnt < OPTIONS:
         word_id = randint(1, 1_500_000)
         word = RussianWords.objects.get(id=word_id).word
+        cutted_word = cut_ending(word)
         # print(word, cutted_word, cutted_correct_word)
         dist = 2 if len(word) < 6 else (len(word) // 2)
         if cutted_word != cutted_correct_word and \

@@ -5,7 +5,6 @@
 {% block content %}
 
     <!-- Background object -->
-    <script src="{% static 'main/js/ShowCardModal.js' %}"></script>
 
     <section id="hero" class="d-flex justify-content-center">
         <div class="container text-center">
@@ -18,12 +17,10 @@
                     <div class="col-2">
                         <div class="control play">
                             <button type="button" class="btn btn-success" data-bs-target="OutCardModal"
-                                    {% if end_day == False %}
-                                    onclick="showModalCard()"
-                                    {% else %}
-                                    onclick="showModalOverCard()"
-                                    {% endif %}
-                            >Начать
+                                    onclick="showCard(0)">Начать
+                            </button>
+                            <button type="button" class="btn btn-success" data-bs-target="OutCardModal"
+                                    onclick="showCard(1)">Начать_2
                             </button>
                         </div>
                     </div>
@@ -41,38 +38,29 @@
         <div class="modal fade" id="CardModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    {% if end_day == False %}
-                        <div class="modal-header bg-light">
-                            <h5 class="modal-title" id="title-card-h5">Напиши перевод слова</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title" id="title-card-h5">Напиши перевод слова</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="input-form">
+                        <div class="modal-body">
+                            <p id="question-field">{{ card }}</p>
+                            <input id="answer-field" name="text" type="text" size="50">
+                            {% for answer in answer_set %}
+                                <button type="submit" class="btn btn-success vers-btn"
+                                >{{ answer }}</button>
+                            {% endfor %}
                         </div>
-                        <form id="input-form">
-                            <div class="modal-body">
-                                <p id="question-field">{{ card }}</p>
-                                <input id="answer-field" name="text" type="text" size="50">
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
-                                <input type="submit" class="btn btn-success modal-success-btn" id="btn-answer"
-                                       value="Ответить!">
-                            </div>
-                        </form>
-                    {% else %}
-                        <div class="modal-header bg-light">
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закончить!</button>
+                            <input type="submit" class="btn btn-success modal-success-btn" id="btn-to-answer"
+                                   value="Ответить!">
                         </div>
-                        <form id="input-form">
-                            <div class="modal-body">
-                                <h5 class="modal-title">На сегодня все, приходите завтра!</h5>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">До завтра!</button>
-                            </div>
-                        </form>
-                    {% endif %}
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <script src="{% static 'main/js/ShowCardModal.js' %}"></script>
 
 {% endblock %}

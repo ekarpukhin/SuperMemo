@@ -9,10 +9,6 @@ let gradenote = {
 let modalWrap = null;
 let ability_to_answer = true;
 
-const complete = () => {
-    document.onkeydown = null;
-}
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -48,58 +44,102 @@ const postAJAX = (url, data, successFunc, failFunc) => {
     });
 }
 
-function getAnswer() {
+const hideEl = (id) => {
+    let div = document.getElementById(id);
+    div.style.visibility = 'hidden';
+}
+
+const showEl = (id) => {
+    let div = document.getElementById(id);
+    div.style.visibility = 'visible';
+}
+
+function getAnswer(set_mode, user_answer) {
     let form = document.getElementById("input-form");
 
-    function completeV(value) {
-        complete();
-        form.text.value = '';   // Что бы была пустая строка после ввода
-    }
-
-    const changeQuestion = (new_word) => {
-        let field = document.getElementById("question-field");
-        field.textContent = new_word;
+    function complete() {
+        document.onkeydown = null;
+        if (!set_mode) form.text.value = '';   // Что бы была пустая строка после ввода
     }
 
     const endingOfStudy = () => {
-        document.getElementById("btn-answer").remove();
+        showEl('answer-field');
+        showEl('btn-to-answer');
+        let part = document.getElementsByClassName('vers-btn');
+        for (let i = 0; i < part.length; i++) {
+            part[i].style.display = 'none';
+        }
+        document.getElementById("btn-to-answer").remove();
         document.getElementById("answer-field").remove();
         document.getElementById("title-card-h5").textContent = "😢";
+        let fields = document.getElementsByClassName("vers-btn");
+        for (let i = 0; i < fields.length;) {
+            fields[i].remove();
+        }
         ability_to_answer = false;
     }
 
+    const changeQuestion = (new_word, new_set) => {
+        let field = document.getElementById("question-field");
+        field.textContent = new_word;
+        let fields = document.getElementsByClassName("vers-btn");
+        for (let i = 0; i < fields.length; i++) {
+            fields[i].textContent = new_set[i];
+        }
+    }
+
+    function get_value() {
+        if (set_mode) return user_answer;
+        return form.text.value;
+    }
+
+    let value = {
+        user_answer: get_value(),
+    };
+
     form.onsubmit = function () {
-        let value = {
-            user_answer: form.text.value
-        };
         if (value.user_answer == '') return false;
 
         postAJAX('/courses/get_answer/', value, function (xhr) {
             window.alert(gradenote[xhr.answer_status]);
-            changeQuestion(xhr.new_word);
+            changeQuestion(xhr.new_word, xhr.new_set);
             if (xhr.end_of_study) endingOfStudy();
         }, function (xhr, errmsg, err) {
         });
 
-        completeV(value);
+        complete();
         return false;
     };
 }
 
-function showModalCard() {
+function showCard(set_mod) {
     modalWrap = document.getElementById('OutCardModal');
     if (ability_to_answer) {
-        modalWrap.querySelector('.modal-success-btn').onclick = function () {
-            getAnswer();
-        };
+        if (set_mod) {
+            document.getElementById('title-card-h5').textContent = "Выбери перевод слова";
+            hideEl('answer-field');
+            hideEl('btn-to-answer');
+            let btns = document.getElementsByClassName("vers-btn");
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].style.display = '';
+                btns[i].onclick = function () {
+                    getAnswer(set_mod, btns[i].textContent);
+                }
+            }
+        } else {
+            document.getElementById('title-card-h5').textContent = "Напиши перевод слова";
+            showEl('answer-field');
+            showEl('btn-to-answer');
+            let btns = document.getElementsByClassName("vers-btn");
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].style.display = 'none';
+            }
+            modalWrap.querySelector('.modal-success-btn').onclick = function () {
+                getAnswer(set_mod, "");
+            };
+        }
     }
 
-    let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
-    modal.show();
-}
-
-function showModalOverCard() {
-    modalWrap = document.getElementById('OutCardModal');
     let modal = new bootstrap.Modal(modalWrap.querySelector('.modal'));
     modal.show();
 }
