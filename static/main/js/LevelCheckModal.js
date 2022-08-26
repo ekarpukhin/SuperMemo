@@ -66,9 +66,11 @@ function getAnswer() {
         form.text.value = '';   // Что бы была пустая строка после ввода
     }
 
-    const changeQuestion = (new_word) => {
+    const changeQuestion = (new_word, new_lvl) => {
         let field = document.getElementById("question-field");
         field.textContent = new_word;
+        field = document.getElementById("title-card-h6");
+        field.textContent = new_lvl;
     }
 
     form.onsubmit = function () {
@@ -79,7 +81,7 @@ function getAnswer() {
 
         postAJAX('/courses/get_levelcheck/', value, function (xhr) {
             window.alert(gradenote[xhr.answer_status]);
-            changeQuestion(xhr.new_word);
+            changeQuestion(xhr.new_word, xhr.new_level);
         }, function (xhr, errmsg, err) {
         });
 

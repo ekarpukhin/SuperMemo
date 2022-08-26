@@ -68,9 +68,9 @@ class UserPageViewMain(View):
         Класс отображения html-ки-страницы пользователя
     """
     def get(self, request, *args, **kwargs):
-        _user = Users.objects.get(name=request.user.username)
         if not request.user.is_authenticated:
             return redirect('main_page')
+        _user = Users.objects.get(name=request.user.username)
         data = {
             "my_user": _user,
 
