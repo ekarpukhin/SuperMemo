@@ -53,3 +53,10 @@ class Courses(models.Model):
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
+
+
+class RussianWords(models.Model):
+    word = models.CharField('word', max_length=255)
+
+    class Meta:
+        db_table = 'russian_words'
