@@ -14,4 +14,7 @@ urlpatterns = [
     path('login/', views.LoginUser.as_view(), name='login'),
     path('create_user/', views.create_user_in_table, name='create_user'),
     path('logout/', views.logout_user, name='logout'),
+    path('deletion_request/', views.deletion_request, name='deletion_request'),
+    path('delete_login/', views.DeleteUser.as_view(), name='delete_login'),
+    path('delete_acc/', views.delete_account, name='delete_acc'),
 ]

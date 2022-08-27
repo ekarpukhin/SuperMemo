@@ -63,12 +63,6 @@ function getAnswer(set_mode, user_answer) {
     }
 
     const endingOfStudy = () => {
-        showEl('answer-field');
-        showEl('btn-to-answer');
-        let part = document.getElementsByClassName('vers-btn');
-        for (let i = 0; i < part.length; i++) {
-            part[i].style.display = 'none';
-        }
         document.getElementById("btn-to-answer").remove();
         document.getElementById("answer-field").remove();
         document.getElementById("title-card-h5").textContent = "😢";

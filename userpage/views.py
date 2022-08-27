@@ -10,7 +10,10 @@ from django.contrib.auth.views import LoginView
 
 from .utils import *
 from .forms import *
+from courses.DataBase import Table
 from courses.models import Users
+
+g_user: Users
 
 
 class RegisterUser(DataMixin, CreateView):
@@ -77,3 +80,44 @@ class UserPageViewMain(View):
             "title": "Личный кабинет",
         }
         return render(request, 'userpage/user_page.html', data)
+
+
+class DeleteUser(DataMixin, LoginView):
+    """
+            Класс удаление аккаунта пользователя (отдельная страничка)
+    """
+    form_class = LoginUserForm
+    template_name = 'userpage/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(DeleteUser, self).get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Удаление аккаунта")
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('delete_acc')
+
+
+def delete_account(request):
+    global g_user
+    if request.user.is_authenticated:
+        if request.user.username == g_user.name:
+            table = Table()
+            table.user = g_user
+            table.clear_user_cards()
+            logout(request)
+            _account = User.objects.get(username=g_user.name)
+            _account.delete()
+            g_user.delete()
+    return redirect('main_page')
+
+
+def deletion_request(request):
+    """
+        Функция получает запрос на удаление и переправляет на повторное залогиневание
+    """
+    global g_user
+    g_user = Users.objects.get(name=request.user.username)
+    logout(request)
+    return redirect('delete_login')
+

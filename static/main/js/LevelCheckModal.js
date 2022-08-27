@@ -61,7 +61,7 @@ function showAskLogin() {
 function getAnswer() {
     let form = document.getElementById("input-form");
 
-    function completeV(value) {
+    function completeV() {
         complete();
         form.text.value = '';   // Что бы была пустая строка после ввода
     }
@@ -85,12 +85,12 @@ function getAnswer() {
         }, function (xhr, errmsg, err) {
         });
 
-        completeV(value);
+        completeV();
         return false;
     };
 }
 
-function showModalCard() {
+function showCard() {
     modalWrap = document.getElementById('OutCardModal');
     modalWrap.querySelector('.modal-success-btn').onclick = function () {
         getAnswer();
