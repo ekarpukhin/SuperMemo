@@ -57,6 +57,7 @@ class Courses(models.Model):
 
 class RussianWords(models.Model):
     word = models.CharField('word', max_length=255)
+    cut = models.CharField('cut', max_length=255)
 
     class Meta:
         db_table = 'russian_words'

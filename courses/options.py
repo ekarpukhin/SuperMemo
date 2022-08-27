@@ -1,8 +1,15 @@
 from .models import *
-from random import randint
+from random import randint, choice, sample
 from .define_accuracy import *
+import time
 
-endings = ['а', 'я', 'о', 'у', 'ь', 'ы', 'ая', 'ое', 'ой', 'ые', 'ый', 'и', 'е', 'яя', 'ее', 'ие', 'йй']
+endings = {1: ['а', 'я', 'о', 'е', 'ы', 'и', 'а', 'я', 'у', 'ю'],
+           2: ['ой', 'ая', 'яя', 'ое', 'ее',
+               'ов', 'ев', 'ых', 'их', 'ам', 'ям',
+               'ому', 'ему', 'ий', 'ый', 'ую', 'юю',
+               'ей', 'ые', 'ие', 'ом', 'ем',
+               'им', 'ым', 'ах', 'ях', ],
+           3: ['ыми', 'ими', 'ами', 'ями', 'ого', 'его', ]}
 
 
 def cut_ending(word: str):
@@ -12,7 +19,7 @@ def cut_ending(word: str):
     """
     min_word = word
     for i in range(1, 3):
-        if word[-i:] in endings:
+        if word[-i:] in endings[i]:
             min_word = word[:-i]
     return min_word
 
@@ -20,18 +27,30 @@ def cut_ending(word: str):
 OPTIONS = 5
 
 
-def get_options(correct_word):
+def get_options(correct_word_list):
+    global_start_time = time.time()
+
     options = []
-    options_cnt = 0
-    cutted_correct_word = cut_ending(correct_word)
-    while options_cnt < OPTIONS:
-        word_id = randint(1, 1_500_000)
-        word = RussianWords.objects.get(id=word_id).word
-        cutted_word = cut_ending(word)
-        # print(word, cutted_word, cutted_correct_word)
-        dist = 2 if len(word) < 6 else (len(word) // 2)
-        if cutted_word != cutted_correct_word and \
-                levenshtein(word, correct_word) < dist:
-            options.append(word)
-            options_cnt += 1
-    return options
+    correct_dict = {correct_word: cut_ending(correct_word) for correct_word in correct_word_list}
+    query_set = RussianWords.objects.order_by('?')
+    # query_set = RussianWords.objects.all()
+    lev_times = []
+    for line in query_set.iterator():
+        word = line.word
+        cut_word = line.cut
+        for i in range(3):
+            correct_word, cut_correct_word = list(correct_dict.items())[i]
+            dist = 2 if len(word) < 6 else (len(word) // 2)
+            lev_time = time.time()
+            if cut_word != cut_correct_word and \
+                    levenshtein(word, correct_word) < dist:
+                options.append(word)
+            lev_times.append(time.time()-lev_time)
+
+        if len(options) > 4:
+            break
+
+    print(len(options))
+    print("searching time: {}\nleven time: {}".format(time.time() - global_start_time,
+                                                      sum(lev_times)))
+    return sample(options, OPTIONS)

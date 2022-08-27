@@ -1,4 +1,4 @@
-import random
+from random import choice, shuffle
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import View
@@ -68,11 +68,11 @@ class CourseViewMain(View):
         card_iter = DataProcessing(request.user.username)
         try:
             question_word = card_iter.next_word().question
-            answer_set = get_options(card_iter.current_word.answer[0])
-            answer_set += [card_iter.current_word.answer[0]]
+            answer_set = get_options(card_iter.current_word.answer)
+            answer_set += [choice(card_iter.current_word.answer)]
         except StopIteration:
             answer_set = ['JOF1', 'IOF2', 'JOF3', 'IOF4', 'JOF5', 'IOF6']
-        random.shuffle(answer_set)
+        shuffle(answer_set)
         data = {
             "card": question_word,
             "answer_set": answer_set,
@@ -94,13 +94,13 @@ def get_answer_form_js(request):
     answer_status = card_iter.process(user_answer)
     try:
         next_question_word = card_iter.next_word().question
-        next_answer_set = get_options(card_iter.current_word.answer[0]) + [card_iter.current_word.answer[0]]
+        next_answer_set = get_options(card_iter.current_word.answer) + [choice(card_iter.current_word.answer)]
         end_of_study = False
     except StopIteration:
         next_question_word = "That`s all for today!"
         next_answer_set = ["Пососи", 'Хуй', 'JOF1', 'IOF2', 'JOF3', 'IOF4']
         end_of_study = True
-    random.shuffle(next_answer_set)
+    shuffle(next_answer_set)
     return JsonResponse(
         {'status': 'Todo added!', "responseText": user_answer, "answer_status": answer_status,
          "new_word": next_question_word, "new_set": next_answer_set, "end_of_study": end_of_study})
