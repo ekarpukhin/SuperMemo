@@ -95,7 +95,18 @@ function getAnswer(set_mode, user_answer) {
         if (value.user_answer == '') return false;
 
         postAJAX('/courses/get_answer/', value, function (xhr) {
-            window.alert(gradenote[xhr.answer_status]);
+			if (set_mode == 1){
+				if (xhr.answer_status != 5){
+					window.alert(gradenote[0]);
+				}
+				else{
+					window.alert(gradenote[xhr.answer_status]);
+				}
+			}
+			else{
+				window.alert(gradenote[xhr.answer_status]);
+			}
+            
             changeQuestion(xhr.new_word, xhr.new_set);
             if (xhr.end_of_study) endingOfStudy();
         }, function (xhr, errmsg, err) {
