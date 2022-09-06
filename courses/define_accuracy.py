@@ -1,4 +1,4 @@
-from Levenshtein import ratio
+from Levenshtein import distance
 
 #
 # def levenshtein(a: str, b: str):
@@ -68,17 +68,17 @@ def levenshtein(a: str, b: str):
 
 
 def define_accuracy(correct_answer, user_answer):
-    distance = ratio(correct_answer, user_answer)
-    error_rate = distance / len(user_answer)
-    if error_rate > 0.5 and distance > 4:
+    dist = distance(correct_answer, user_answer)
+    error_rate = dist / len(user_answer)
+    if error_rate > 0.5 and dist > 4:
         return 0
-    if error_rate > 0.4 and distance > 3:
+    if error_rate > 0.4 and dist > 3:
         return 1
-    if error_rate > 0.3 and distance > 2:
+    if error_rate > 0.3 and dist > 2:
         return 2
-    if error_rate > 0.2 and distance > 0:
+    if error_rate > 0.2 and dist > 0:
         return 3
-    if error_rate > 0 and distance > 0:
+    if error_rate > 0 and dist > 0:
         return 4
     if error_rate == 0:
         return 5

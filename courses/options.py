@@ -1,7 +1,7 @@
 from .models import *
 from random import randint, choice, sample
 from .define_accuracy import *
-from Levenshtein import ratio
+from Levenshtein import distance
 
 import time
 
@@ -45,7 +45,7 @@ def get_options(correct_word_list):
             dist = 2 if len(word) < 6 else (len(word) // 2)
             lev_time = time.time()
             if cut_word != cut_correct_word and \
-                    ratio(word, correct_word) < dist:
+                    distance(word, correct_word) < dist:
                 options.append(word)
             lev_times.append(time.time()-lev_time)
 
