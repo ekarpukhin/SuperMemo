@@ -34,25 +34,27 @@ def get_options(correct_word_list):
 
     options = []
     correct_dict = {correct_word: cut_ending(correct_word) for correct_word in correct_word_list}
-    query_set = RussianWords.objects.order_by('?')
-    # query_set = RussianWords.objects.all()
+    # query_set = RussianWords.objects.order_by('?')
+    query_set = RussianWords.objects.all()
     lev_times = []
     for line in query_set.iterator():
         word = line.word
         cut_word = line.cut
-        for i in range(3):
-            correct_word, cut_correct_word = list(correct_dict.items())[i]
-            dist = 2 if len(word) < 6 else (len(word) // 2)
+        for correct_word, cut_correct_word in list(correct_dict.items()):
+            # correct_word, cut_correct_word = list(correct_dict.items())[i]
+            dist = 3 if len(word) < 6 else (len(word) // 2)
             lev_time = time.time()
             if cut_word != cut_correct_word and \
                     distance(word, correct_word) < dist:
                 options.append(word)
             lev_times.append(time.time()-lev_time)
 
-        if len(options) > 4:
-            break
+        # if len(options) > 2:
+            # break
+
+    options = sample(options, min(5, len(options)))
 
     print(len(options))
     print("searching time: {}\nleven time: {}".format(time.time() - global_start_time,
                                                       sum(lev_times)))
-    return sample(options, OPTIONS)
+    return options + [""]*(5 - len(options))
